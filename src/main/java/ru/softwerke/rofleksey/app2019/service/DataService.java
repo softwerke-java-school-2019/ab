@@ -3,7 +3,12 @@ package ru.softwerke.rofleksey.app2019.service;
 import ru.softwerke.rofleksey.app2019.model.Model;
 
 import javax.ws.rs.NotFoundException;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -13,14 +18,14 @@ public abstract class DataService<T extends Model> {
     private static final long MAX_COUNT = 100;
     Map<String, Function<String, Predicate<T>>> filters;
     Map<String, Comparator<T>> sorts;
-    private ArrayList<T> list;
-    private Map<Long, T> idMap;
+    private ConcurrentLinkedQueue<T> list;
+    private ConcurrentHashMap<Long, T> idMap;
 
     DataService() {
-        list = new ArrayList<>();
+        list = new ConcurrentLinkedQueue<>();
         filters = new HashMap<>(10, 1);
         sorts = new HashMap<>(10, 1);
-        idMap = new HashMap<>();
+        idMap = new ConcurrentHashMap<>();
     }
 
     public T addEntity(T t) {

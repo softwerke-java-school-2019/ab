@@ -5,9 +5,9 @@ HW1?
 ## usage
 
 ```
-GET /api/<entity>/get
-GET /api/<entity>/id/{id}
-POST /api/<entity>/create (Body: JSON)
+GET /api/<entity>
+GET /api/<entity>/id
+POST /api/<entity> (Body: JSON)
 ```
 list of entities and their JSON-representation:
 * `customer {first_name: String, middle_name: String, last_name: String, birth_date: long}`
@@ -16,7 +16,7 @@ list of entities and their JSON-representation:
 
 BillItem has JSON-form `{device_id: long, quantity: int, price: String}` and is not considered an entity
 
-### /get options
+### GET /api/<entity>  options
 * orderBy : String - not required
   * id
   * price_total (Bill)
@@ -44,9 +44,9 @@ BillItem has JSON-form `{device_id: long, quantity: int, price: String}` and is 
 ### request examples
 
 ```
-GET /api/bill/get?orderBy=date
-GET /api/customer/get?filterBy=last_name&filterValue=Privet&orderBy=middle_name
-POST /api/bill/create {"client_id":2,"items_list":[{"device_id":1,"quantity":22,"price":34}],"date":2,"time":69}
+GET /api/bill?orderBy=date
+GET /api/customer?filterBy=last_name&filterValue=Privet&orderBy=middle_name
+POST /api/bill {"client_id":2,"items_list":[{"device_id":1,"quantity":22,"price":34}],"date":2,"time":69}
 ```
 ### response examples
 ```
