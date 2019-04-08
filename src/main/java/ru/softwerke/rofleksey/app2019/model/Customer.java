@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Customer implements Model {
     public static final String ID_FIELD = "id";
@@ -15,7 +16,7 @@ public class Customer implements Model {
     public static final String LAST_NAME_FIELD = "last_name";
     public static final String BIRTH_DATE_FIELD = "birth_date";
 
-    private static long idCounter = 0;
+    private static AtomicLong idCounter = new AtomicLong(0);
 
 
     @JsonProperty(ID_FIELD)
@@ -44,7 +45,7 @@ public class Customer implements Model {
                     @NotNull @JsonProperty(value = MIDDLE_NAME_FIELD, required = true) String middleName,
                     @NotNull @JsonProperty(value = LAST_NAME_FIELD, required = true) String lastName,
                     @NotNull @JsonProperty(value = BIRTH_DATE_FIELD, required = true) long birthDate) {
-        this.id = idCounter++;
+        this.id = idCounter.getAndIncrement();
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;

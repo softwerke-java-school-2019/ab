@@ -14,8 +14,6 @@ public class DeviceDataServiceImpl extends DeviceDataService {
     private static final String ISSUER_CRITERIA = "issuer";
     private static final String MODEL_CRITERIA = "model";
 
-    private static DeviceDataServiceImpl INSTANCE;
-
     private DeviceDataServiceImpl() {
         super();
         filters.put(PRICE_CRITERIA, priceString -> d -> d.getPrice().toString().equals(priceString));
@@ -41,9 +39,6 @@ public class DeviceDataServiceImpl extends DeviceDataService {
     }
 
     public static DeviceDataServiceImpl getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new DeviceDataServiceImpl();
-        }
-        return INSTANCE;
+        return new DeviceDataServiceImpl();
     }
 }

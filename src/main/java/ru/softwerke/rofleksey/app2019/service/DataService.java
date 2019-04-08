@@ -2,6 +2,7 @@ package ru.softwerke.rofleksey.app2019.service;
 
 import ru.softwerke.rofleksey.app2019.model.Model;
 
+import javax.ws.rs.NotFoundException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -22,23 +23,22 @@ public abstract class DataService<T extends Model> {
         idMap = new HashMap<>();
     }
 
-    public String addEntity(T t) {
+    public T addEntity(T t) {
         if (t != null) {
             list.add(t);
             idMap.put(t.getId(), t);
-            return "Success";
         }
-        return "Failed";
+        return t;
     }
 
-    public T getEntityById(long id) {
+    public T getEntityById(long id) throws NotFoundException {
         return idMap.get(id);
     }
 
-    public List<T> search(String filtering, String filterValue, String ordering, long count, long offset) {
-        Function<String, Predicate<T>> func = filters.get(filtering);
+    public List<T> search(String filterTerm, String filterValue, String orderTerm, long count, long offset) {
+        Function<String, Predicate<T>> func = filters.get(filterTerm);
         Predicate<T> filter = func == null ? null : func.apply(filterValue);
-        Comparator<T> sort = sorts.get(ordering);
+        Comparator<T> sort = sorts.get(orderTerm);
         Stream<T> stream = list.stream();
         if (filter != null) {
             stream = stream.filter(filter);
@@ -47,5 +47,13 @@ public abstract class DataService<T extends Model> {
             stream = stream.sorted(sort);
         }
         return stream.skip(offset).limit(Math.min(count, MAX_COUNT)).collect(Collectors.toList());
+    }
+
+    public boolean isValidFilterTerm(String term) {
+        return filters.containsKey(term);
+    }
+
+    public boolean isValidOrderTerm(String term) {
+        return sorts.containsKey(term);
     }
 }

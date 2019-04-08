@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Device implements Model {
     private static final String ID_FIELD = "id";
@@ -16,7 +17,7 @@ public class Device implements Model {
     private static final String ISSUER_FIELD = "issuer";
     private static final String MODEL_FIELD = "model";
 
-    private static long idCounter = 0;
+    private static AtomicLong idCounter = new AtomicLong(0);
 
 
     @JsonProperty(ID_FIELD)
@@ -42,7 +43,7 @@ public class Device implements Model {
             @NotNull @JsonProperty(value = COLOR_RGB_FIELD, required = true) int colorRGB,
             @NotNull @JsonProperty(value = ISSUER_FIELD, required = true) String issuer,
             @NotNull @JsonProperty(value = MODEL_FIELD, required = true) String model) {
-        this.id = idCounter++;
+        this.id = idCounter.getAndIncrement();
         this.price = new BigDecimal(price);
         this.type = type;
         this.colorName = colorName;

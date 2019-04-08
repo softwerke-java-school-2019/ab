@@ -13,8 +13,6 @@ public class CustomerDataServiceImpl extends CustomerDataService {
     private static final String FULL_NAME_CRITERIA = "full_name";
     private static final String BIRTH_DATE_CRITERIA = "birth_date";
 
-    private static CustomerDataServiceImpl INSTANCE;
-
     private CustomerDataServiceImpl() {
         super();
         filters.put(FIRST_NAME_CRITERIA, name -> c -> c.getFirstName().equals(name));
@@ -38,9 +36,6 @@ public class CustomerDataServiceImpl extends CustomerDataService {
     }
 
     public static CustomerDataServiceImpl getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new CustomerDataServiceImpl();
-        }
-        return INSTANCE;
+        return new CustomerDataServiceImpl();
     }
 }

@@ -15,8 +15,6 @@ public class BillDataServiceImpl extends BillDataService {
     private static final String WITH_DEVICE_ID_CRITERIA = "with_device_id";
     private static final String DATE_CRITERIA = "date";
 
-    private static BillDataServiceImpl INSTANCE;
-
     private BillDataServiceImpl() {
         super();
         filters.put(TOTAL_PRICE_EQUAL_CRITERIA, p -> b -> b.getTotalPrice().toString().equals(p));
@@ -67,9 +65,6 @@ public class BillDataServiceImpl extends BillDataService {
     }
 
     public static BillDataServiceImpl getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new BillDataServiceImpl();
-        }
-        return INSTANCE;
+        return new BillDataServiceImpl();
     }
 }

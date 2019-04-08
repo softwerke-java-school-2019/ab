@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Bill implements Model {
     private static final String ID_FIELD = "id";
@@ -16,7 +17,7 @@ public class Bill implements Model {
     private static final String DATE_FIELD = "date";
     private static final String TIME_FIELD = "time";
 
-    private static long idCounter = 0;
+    private static AtomicLong idCounter = new AtomicLong(0);
 
     @JsonProperty(ID_FIELD)
     private final long id;
@@ -45,7 +46,7 @@ public class Bill implements Model {
             @NotNull @JsonProperty(value = ITEMS_LIST_FIELD, required = true) List<BillItem> items,
             @NotNull @JsonProperty(value = DATE_FIELD, required = true) long date,
             @NotNull @JsonProperty(value = TIME_FIELD, required = true) long time) {
-        this.id = idCounter++;
+        this.id = idCounter.getAndIncrement();
         this.clientId = clientId;
         this.items = items;
         this.totalPrice = this.items.stream().map(BillItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
