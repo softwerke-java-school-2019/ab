@@ -1,25 +1,25 @@
 package ru.softwerke.rofleksey.app2019.controller.rest;
 
-public class Error {
-    private final InnerError error;
+public class JSONErrorMessage {
+    private final ErrorDescription error;
 
-    private Error(InnerError e) {
+    private JSONErrorMessage(ErrorDescription e) {
         this.error = e;
     }
 
-    static Error getInstance(String type, String msg) {
-        return new Error(new InnerError(type, msg));
+    static JSONErrorMessage create(String type, String msg) {
+        return new JSONErrorMessage(new ErrorDescription(type, msg));
     }
 
-    public InnerError getError() {
+    public ErrorDescription getError() {
         return error;
     }
 
-    public static class InnerError {
+    public static class ErrorDescription {
         private final String type;
         private final String message;
 
-        private InnerError(String type, String msg) {
+        private ErrorDescription(String type, String msg) {
             this.type = type;
             this.message = msg;
         }

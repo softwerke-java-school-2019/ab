@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class BillItem {
-    private static final String DEVICE_ID_FIELD = "device_id";
+    private static final String DEVICE_ID_FIELD = "deviceId";
     private static final String QUANTITY_FIELD = "quantity";
     private static final String PRICE_FIELD = "price";
 

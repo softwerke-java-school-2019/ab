@@ -1,18 +1,21 @@
 package ru.softwerke.rofleksey.app2019.controller.rest;
 
+import ru.softwerke.rofleksey.app2019.filter.DeviceRequest;
+import ru.softwerke.rofleksey.app2019.filter.SearchRequest;
 import ru.softwerke.rofleksey.app2019.model.Device;
-import ru.softwerke.rofleksey.app2019.service.DeviceDataService;
+import ru.softwerke.rofleksey.app2019.service.DataService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 @Path("/device")
 public class DeviceRestController extends ModelController<Device> {
-
     @Inject
-    public DeviceRestController(DeviceDataService service) {
+    public DeviceRestController(DataService<Device> service) {
         this.service = service;
     }
 
@@ -24,24 +27,25 @@ public class DeviceRestController extends ModelController<Device> {
     }
 
     @GET
-    @Path("/id")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Device getDeviceById(@QueryParam("id") String idParam) {
+    public Device getDeviceById(@PathParam("id") String idParam) {
         return getEntityById(idParam);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Device> getDevices(@QueryParam("filterBy") String filterTerm,
-                                   @QueryParam("filterValue") String filterValue,
-                                   @QueryParam("orderBy") String orderTerm,
-                                   @DefaultValue("100") @QueryParam("count") String countParam,
-                                   @DefaultValue("0") @QueryParam("offset") String offsetParam) {
-        return getList(filterTerm, filterValue, orderTerm, countParam, offsetParam);
+    public List<Device> getDevices(@Context UriInfo ui) {
+        return search(ui.getQueryParameters());
     }
 
     @Override
     String getEntityName() {
         return "device";
+    }
+
+    @Override
+    SearchRequest<Device> getEmptySearchRequest() {
+        return new DeviceRequest();
     }
 }

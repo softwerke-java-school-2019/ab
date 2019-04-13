@@ -6,22 +6,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class Device implements Model {
     private static final String ID_FIELD = "id";
     private static final String PRICE_FIELD = "price";
     private static final String TYPE_FIELD = "type";
-    private static final String COLOR_NAME_FIELD = "color_name";
-    private static final String COLOR_RGB_FIELD = "color_rgb";
+    private static final String COLOR_NAME_FIELD = "colorName";
+    private static final String COLOR_RGB_FIELD = "colorRB";
     private static final String ISSUER_FIELD = "issuer";
     private static final String MODEL_FIELD = "model";
 
-    private static AtomicLong idCounter = new AtomicLong(0);
-
 
     @JsonProperty(ID_FIELD)
-    private final long id;
+    private long id;
     @JsonProperty(TYPE_FIELD)
     private final String type;
     @JsonProperty(COLOR_NAME_FIELD)
@@ -43,7 +40,6 @@ public class Device implements Model {
             @NotNull @JsonProperty(value = COLOR_RGB_FIELD, required = true) int colorRGB,
             @NotNull @JsonProperty(value = ISSUER_FIELD, required = true) String issuer,
             @NotNull @JsonProperty(value = MODEL_FIELD, required = true) String model) {
-        this.id = idCounter.getAndIncrement();
         this.price = new BigDecimal(price);
         this.type = type;
         this.colorName = colorName;
@@ -74,6 +70,11 @@ public class Device implements Model {
     @Override
     public long getId() {
         return id;
+    }
+
+    @Override
+    public void setId(long id) {
+        this.id = id;
     }
 
     public BigDecimal getPrice() {

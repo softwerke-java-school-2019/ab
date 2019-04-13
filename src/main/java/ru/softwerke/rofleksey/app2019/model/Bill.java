@@ -8,19 +8,16 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class Bill implements Model {
     private static final String ID_FIELD = "id";
-    private static final String CLIENT_ID_FIELD = "client_id";
-    private static final String ITEMS_LIST_FIELD = "items_list";
+    private static final String CLIENT_ID_FIELD = "clientId";
+    private static final String ITEMS_LIST_FIELD = "items";
     private static final String DATE_FIELD = "date";
     private static final String TIME_FIELD = "time";
 
-    private static AtomicLong idCounter = new AtomicLong(0);
-
     @JsonProperty(ID_FIELD)
-    private final long id;
+    private long id = -1;
 
     @JsonProperty(CLIENT_ID_FIELD)
     private final long clientId;
@@ -46,7 +43,6 @@ public class Bill implements Model {
             @NotNull @JsonProperty(value = ITEMS_LIST_FIELD, required = true) List<BillItem> items,
             @NotNull @JsonProperty(value = DATE_FIELD, required = true) long date,
             @NotNull @JsonProperty(value = TIME_FIELD, required = true) long time) {
-        this.id = idCounter.getAndIncrement();
         this.clientId = clientId;
         this.items = items;
         this.totalPrice = this.items.stream().map(BillItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -75,6 +71,11 @@ public class Bill implements Model {
     @Override
     public long getId() {
         return id;
+    }
+
+    @Override
+    public void setId(long id) {
+        this.id = id;
     }
 
     public boolean containsDevice(long id) {

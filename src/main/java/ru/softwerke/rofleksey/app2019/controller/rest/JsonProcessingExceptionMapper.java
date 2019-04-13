@@ -10,7 +10,7 @@ import javax.ws.rs.ext.Provider;
 public class JsonProcessingExceptionMapper implements ExceptionMapper<JsonProcessingException> {
     @Override
     public Response toResponse(JsonProcessingException exception) {
-        Error error = Error.getInstance("invalid json", exception.getOriginalMessage());
-        return Response.status(Response.Status.BAD_REQUEST).entity(error).build();
+        JSONErrorMessage message = JSONErrorMessage.create("invalid json", exception.getOriginalMessage());
+        return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
     }
 }

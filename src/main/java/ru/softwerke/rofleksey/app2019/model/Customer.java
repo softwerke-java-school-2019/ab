@@ -7,20 +7,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class Customer implements Model {
-    public static final String ID_FIELD = "id";
-    public static final String FIRST_NAME_FIELD = "first_name";
-    public static final String MIDDLE_NAME_FIELD = "middle_name";
-    public static final String LAST_NAME_FIELD = "last_name";
-    public static final String BIRTH_DATE_FIELD = "birth_date";
-
-    private static AtomicLong idCounter = new AtomicLong(0);
+    private static final String ID_FIELD = "id";
+    private static final String FIRST_NAME_FIELD = "firstName";
+    private static final String MIDDLE_NAME_FIELD = "middleName";
+    private static final String LAST_NAME_FIELD = "lastName";
+    private static final String BIRTH_DATE_FIELD = "birthDate";
 
 
     @JsonProperty(ID_FIELD)
-    private final long id;
+    private long id;
 
     @JsonProperty(FIRST_NAME_FIELD)
     private final String firstName;
@@ -45,7 +42,6 @@ public class Customer implements Model {
                     @NotNull @JsonProperty(value = MIDDLE_NAME_FIELD, required = true) String middleName,
                     @NotNull @JsonProperty(value = LAST_NAME_FIELD, required = true) String lastName,
                     @NotNull @JsonProperty(value = BIRTH_DATE_FIELD, required = true) long birthDate) {
-        this.id = idCounter.getAndIncrement();
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -69,6 +65,11 @@ public class Customer implements Model {
 
     public long getId() {
         return id;
+    }
+
+    @Override
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
