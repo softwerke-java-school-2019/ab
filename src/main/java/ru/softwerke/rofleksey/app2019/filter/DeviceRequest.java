@@ -2,6 +2,7 @@ package ru.softwerke.rofleksey.app2019.filter;
 
 import ru.softwerke.rofleksey.app2019.model.Device;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,35 +22,38 @@ public class DeviceRequest extends SearchRequest<Device> {
     private static final Map<String, Comparator<Device>> comparators;
 
     static {
-        filterFactories = new HashMap<>();
-        comparators = new HashMap<>();
-        filterFactories.put(PRICE_CRITERIA, p -> {
+        Map<String, FilterFactory<Device>> filterFactoriesTemp = new HashMap<>();
+        Map<String, Comparator<Device>> comparatorTemp = new HashMap<>();
+        filterFactoriesTemp.put(PRICE_CRITERIA, p -> {
             double price = SearchRequestUtils.parseString(p, Double::valueOf);
             return device -> Double.compare(device.getPriceDouble(), price) == 0;
         });
-        filterFactories.put(PRICE_FROM_CRITERIA, p -> {
+        filterFactoriesTemp.put(PRICE_FROM_CRITERIA, p -> {
             double price = SearchRequestUtils.parseString(p, Double::valueOf);
             return device -> Double.compare(device.getPriceDouble(), price) >= 0;
         });
-        filterFactories.put(PRICE_TO_CRITERIA, p -> {
+        filterFactoriesTemp.put(PRICE_TO_CRITERIA, p -> {
             double price = SearchRequestUtils.parseString(p, Double::valueOf);
             return device -> Double.compare(device.getPriceDouble(), price) <= 0;
         });
-        filterFactories.put(TYPE_CRITERIA, type -> d -> d.getType().equals(type));
-        filterFactories.put(COLOR_NAME_CRITERIA, name -> d -> d.getColorName().equals(name));
-        filterFactories.put(COLOR_RGB_CRITERIA, color -> {
+        filterFactoriesTemp.put(TYPE_CRITERIA, type -> d -> d.getType().equals(type));
+        filterFactoriesTemp.put(COLOR_NAME_CRITERIA, name -> d -> d.getColorName().equals(name));
+        filterFactoriesTemp.put(COLOR_RGB_CRITERIA, color -> {
             int colorInt = SearchRequestUtils.parseString(color, Integer::valueOf);
             return device -> device.getColorRGB() == colorInt;
         });
-        filterFactories.put(ISSUER_CRITERIA, is -> d -> d.getIssuer().equals(is));
-        filterFactories.put(MODEL_CRITERIA, m -> d -> d.getModel().equals(m));
-        comparators.put(ID_CRITERIA, Comparator.comparing(Device::getId));
-        comparators.put(PRICE_CRITERIA, Comparator.comparing(Device::getPrice));
-        comparators.put(TYPE_CRITERIA, Comparator.comparing(Device::getType));
-        comparators.put(COLOR_NAME_CRITERIA, Comparator.comparing(Device::getColorName));
-        comparators.put(COLOR_RGB_CRITERIA, Comparator.comparing(Device::getColorRGB));
-        comparators.put(ISSUER_CRITERIA, Comparator.comparing(Device::getIssuer));
-        comparators.put(MODEL_CRITERIA, Comparator.comparing(Device::getModel));
+        filterFactoriesTemp.put(ISSUER_CRITERIA, is -> d -> d.getIssuer().equals(is));
+        filterFactoriesTemp.put(MODEL_CRITERIA, m -> d -> d.getModel().equals(m));
+        comparatorTemp.put(ID_CRITERIA, Comparator.comparing(Device::getId));
+        comparatorTemp.put(PRICE_CRITERIA, Comparator.comparing(Device::getPrice));
+        comparatorTemp.put(TYPE_CRITERIA, Comparator.comparing(Device::getType));
+        comparatorTemp.put(COLOR_NAME_CRITERIA, Comparator.comparing(Device::getColorName));
+        comparatorTemp.put(COLOR_RGB_CRITERIA, Comparator.comparing(Device::getColorRGB));
+        comparatorTemp.put(ISSUER_CRITERIA, Comparator.comparing(Device::getIssuer));
+        comparatorTemp.put(MODEL_CRITERIA, Comparator.comparing(Device::getModel));
+
+        filterFactories = Collections.unmodifiableMap(filterFactoriesTemp);
+        comparators = Collections.unmodifiableMap(comparatorTemp);
     }
 
     @Override

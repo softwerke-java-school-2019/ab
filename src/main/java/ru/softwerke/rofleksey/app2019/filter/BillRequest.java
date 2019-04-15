@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,53 +29,56 @@ public class BillRequest extends SearchRequest<Bill> {
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern(Bill.DATE_FORMAT);
 
     static {
-        filterFactories = new HashMap<>();
-        comparators = new HashMap<>();
-        filterFactories.put(TOTAL_PRICE_CRITERIA, p -> {
+        Map<String, FilterFactory<Bill>> filterFactoriesTemp = new HashMap<>();
+        Map<String, Comparator<Bill>> comparatorTemp = new HashMap<>();
+        filterFactoriesTemp.put(TOTAL_PRICE_CRITERIA, p -> {
             double price = SearchRequestUtils.parseString(p, Double::valueOf);
             return bill -> Double.compare(bill.getTotalPriceDouble(), price) == 0;
         });
-        filterFactories.put(TOTAL_PRICE_FROM_CRITERIA, p -> {
+        filterFactoriesTemp.put(TOTAL_PRICE_FROM_CRITERIA, p -> {
             double price = SearchRequestUtils.parseString(p, Double::valueOf);
             return bill -> Double.compare(bill.getTotalPriceDouble(), price) >= 0;
         });
-        filterFactories.put(TOTAL_PRICE_TO_CRITERIA, p -> {
+        filterFactoriesTemp.put(TOTAL_PRICE_TO_CRITERIA, p -> {
             double price = SearchRequestUtils.parseString(p, Double::valueOf);
             return bill -> Double.compare(bill.getTotalPriceDouble(), price) <= 0;
         });
-        filterFactories.put(CLIENT_ID_CRITERIA, id -> {
+        filterFactoriesTemp.put(CLIENT_ID_CRITERIA, id -> {
             long clientId = SearchRequestUtils.parseString(id, Long::valueOf);
             return bill -> bill.getClientId() == clientId;
         });
-        filterFactories.put(WITH_DEVICE_ID_CRITERIA, id -> {
+        filterFactoriesTemp.put(WITH_DEVICE_ID_CRITERIA, id -> {
             long deviceId = SearchRequestUtils.parseString(id, Long::valueOf);
             return bill -> bill.containsDevice(deviceId);
         });
-        filterFactories.put(DATE_CRITERIA, dateString -> {
+        filterFactoriesTemp.put(DATE_CRITERIA, dateString -> {
             LocalDateTime date = SearchRequestUtils.parseString(dateString, it -> LocalDateTime.parse(it, format));
             long dateLong = date.toInstant(ZoneOffset.UTC).with(LocalTime.MIDNIGHT).toEpochMilli();
             return bill -> bill.getDateLong() == dateLong;
         });
-        filterFactories.put(DATE_TIME_CRITERIA, dateString -> {
+        filterFactoriesTemp.put(DATE_TIME_CRITERIA, dateString -> {
             LocalDateTime date = SearchRequestUtils.parseString(dateString, it -> LocalDateTime.parse(it, format));
             long dateLong = date.toInstant(ZoneOffset.UTC).toEpochMilli();
             return bill -> bill.getDateLong() == dateLong;
         });
-        filterFactories.put(DATE_TIME_FROM_CRITERIA, dateString -> {
+        filterFactoriesTemp.put(DATE_TIME_FROM_CRITERIA, dateString -> {
             LocalDateTime date = SearchRequestUtils.parseString(dateString, it -> LocalDateTime.parse(it, format));
             long dateLong = date.toInstant(ZoneOffset.UTC).toEpochMilli();
             return bill -> bill.getDateLong() >= dateLong;
         });
-        filterFactories.put(DATE_TIME_TO_CRITERIA, dateString -> {
+        filterFactoriesTemp.put(DATE_TIME_TO_CRITERIA, dateString -> {
             LocalDateTime date = SearchRequestUtils.parseString(dateString, it -> LocalDateTime.parse(it, format));
             long dateLong = date.toInstant(ZoneOffset.UTC).toEpochMilli();
             return bill -> bill.getDateLong() <= dateLong;
         });
 
-        comparators.put(ID_CRITERIA, Comparator.comparing(Bill::getId));
-        comparators.put(TOTAL_PRICE_CRITERIA, Comparator.comparing(Bill::getTotalPriceDouble));
-        comparators.put(CLIENT_ID_CRITERIA, Comparator.comparing(Bill::getClientId));
-        comparators.put(DATE_CRITERIA, Comparator.comparing(Bill::getDateLong));
+        comparatorTemp.put(ID_CRITERIA, Comparator.comparing(Bill::getId));
+        comparatorTemp.put(TOTAL_PRICE_CRITERIA, Comparator.comparing(Bill::getTotalPriceDouble));
+        comparatorTemp.put(CLIENT_ID_CRITERIA, Comparator.comparing(Bill::getClientId));
+        comparatorTemp.put(DATE_CRITERIA, Comparator.comparing(Bill::getDateLong));
+
+        filterFactories = Collections.unmodifiableMap(filterFactoriesTemp);
+        comparators = Collections.unmodifiableMap(comparatorTemp);
     }
 
     @Override
