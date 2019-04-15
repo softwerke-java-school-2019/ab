@@ -1,11 +1,15 @@
 package ru.softwerke.rofleksey.app2019.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,7 +18,8 @@ public class Bill implements Model {
     private static final String CLIENT_ID_FIELD = "clientId";
     private static final String ITEMS_LIST_FIELD = "items";
     private static final String DATE_FIELD = "date";
-    private static final String TIME_FIELD = "time";
+
+    public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
 
     @JsonProperty(ID_FIELD)
     private long id = -1;
@@ -26,10 +31,14 @@ public class Bill implements Model {
     private final List<BillItem> items;
 
     @JsonProperty(DATE_FIELD)
-    private final long date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
+    private final LocalDateTime date;
 
-    @JsonProperty(TIME_FIELD)
-    private final long time;
+    @JsonIgnore
+    private final long dateLong;
+
+    @JsonIgnore
+    private final long dateStartOfTheDayLong;
 
     @JsonIgnore
     private BigDecimal totalPrice;
@@ -41,13 +50,14 @@ public class Bill implements Model {
     public Bill(
             @NotNull @JsonProperty(value = CLIENT_ID_FIELD, required = true) long clientId,
             @NotNull @JsonProperty(value = ITEMS_LIST_FIELD, required = true) List<BillItem> items,
-            @NotNull @JsonProperty(value = DATE_FIELD, required = true) long date,
-            @NotNull @JsonProperty(value = TIME_FIELD, required = true) long time) {
+            @NotNull @JsonProperty(value = DATE_FIELD, required = true)
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT) LocalDateTime date) {
         this.clientId = clientId;
         this.items = items;
         this.totalPrice = this.items.stream().map(BillItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
         this.date = date;
-        this.time = time;
+        this.dateLong = date.toInstant(ZoneOffset.UTC).toEpochMilli();
+        this.dateStartOfTheDayLong = LocalDateTime.of(date.toLocalDate(), LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC).toEpochMilli();
         this.totalPriceDouble = this.totalPrice.doubleValue();
     }
 
@@ -66,6 +76,16 @@ public class Bill implements Model {
     @Override
     public int hashCode() {
         return Objects.hash(id, clientId, items, date);
+    }
+
+    @Override
+    public String toString() {
+        return "Bill{" +
+                "id=" + id +
+                ", clientId=" + clientId +
+                ", items=" + items +
+                ", date=" + date +
+                '}';
     }
 
     @Override
@@ -94,12 +114,16 @@ public class Bill implements Model {
         return items;
     }
 
-    public long getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public long getTime() {
-        return time;
+    public long getDateLong() {
+        return dateLong;
+    }
+
+    public long getDateStartOfTheDayLong() {
+        return dateStartOfTheDayLong;
     }
 
     public double getTotalPriceDouble() {

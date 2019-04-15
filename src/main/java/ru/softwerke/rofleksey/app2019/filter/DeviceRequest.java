@@ -9,6 +9,8 @@ import java.util.Map;
 public class DeviceRequest extends SearchRequest<Device> {
     private static final String ID_CRITERIA = "id";
     private static final String PRICE_CRITERIA = "price";
+    private static final String PRICE_FROM_CRITERIA = "priceFrom";
+    private static final String PRICE_TO_CRITERIA = "priceTo";
     private static final String TYPE_CRITERIA = "type";
     private static final String COLOR_NAME_CRITERIA = "colorName";
     private static final String COLOR_RGB_CRITERIA = "colorRGB";
@@ -21,11 +23,22 @@ public class DeviceRequest extends SearchRequest<Device> {
     static {
         filterFactories = new HashMap<>();
         comparators = new HashMap<>();
-        filterFactories.put(PRICE_CRITERIA, priceString -> d -> d.getPrice().toString().equals(priceString));
+        filterFactories.put(PRICE_CRITERIA, p -> {
+            double price = SearchRequestUtils.parseString(p, Double::valueOf);
+            return device -> Double.compare(device.getPriceDouble(), price) == 0;
+        });
+        filterFactories.put(PRICE_FROM_CRITERIA, p -> {
+            double price = SearchRequestUtils.parseString(p, Double::valueOf);
+            return device -> Double.compare(device.getPriceDouble(), price) >= 0;
+        });
+        filterFactories.put(PRICE_TO_CRITERIA, p -> {
+            double price = SearchRequestUtils.parseString(p, Double::valueOf);
+            return device -> Double.compare(device.getPriceDouble(), price) <= 0;
+        });
         filterFactories.put(TYPE_CRITERIA, type -> d -> d.getType().equals(type));
         filterFactories.put(COLOR_NAME_CRITERIA, name -> d -> d.getColorName().equals(name));
         filterFactories.put(COLOR_RGB_CRITERIA, color -> {
-            int colorInt = SearchRequestUtils.parseNumber(color, Integer::valueOf);
+            int colorInt = SearchRequestUtils.parseString(color, Integer::valueOf);
             return device -> device.getColorRGB() == colorInt;
         });
         filterFactories.put(ISSUER_CRITERIA, is -> d -> d.getIssuer().equals(is));

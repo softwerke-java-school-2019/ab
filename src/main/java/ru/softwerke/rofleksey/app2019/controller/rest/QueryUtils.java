@@ -1,5 +1,7 @@
 package ru.softwerke.rofleksey.app2019.controller.rest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
@@ -20,7 +22,7 @@ class QueryUtils {
     }
 
     private static void checkMandatory(String param, String paramName, String customMessage) throws WebApplicationException {
-        if (param == null) {
+        if (StringUtils.isBlank(param)) {
             throw new WebApplicationException(
                     Response.status(Response.Status.BAD_REQUEST)
                             .entity(JSONErrorMessage.create("missing mandatory query parameter",

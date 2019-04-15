@@ -4,13 +4,11 @@ import ru.softwerke.rofleksey.app2019.filter.MalformedSearchRequestException;
 import ru.softwerke.rofleksey.app2019.filter.SearchRequest;
 import ru.softwerke.rofleksey.app2019.model.Model;
 import ru.softwerke.rofleksey.app2019.service.DataService;
-import ru.softwerke.rofleksey.app2019.storage.SearchQuery;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.util.List;
-import java.util.Map;
 
 abstract class ModelController<T extends Model> {
     private static final String COUNT = "count";
@@ -30,7 +28,8 @@ abstract class ModelController<T extends Model> {
         if (t == null) {
             Response response = Response
                     .status(Response.Status.NOT_FOUND)
-                    .entity(JSONErrorMessage.create("entity doesn't exist", String.format("%s with id %d doesn't exist", getEntityName(), id)))
+                    .entity(JSONErrorMessage.create("entity doesn't exist",
+                            String.format("%s with id %d doesn't exist", getEntityName(), id)))
                     .build();
             throw new WebApplicationException(response);
         }
@@ -40,14 +39,27 @@ abstract class ModelController<T extends Model> {
     List<T> search(MultivaluedMap<String, String> clientParams) throws WebApplicationException {
         try {
             SearchRequest<T> request = getEmptySearchRequest();
-            executeIfPresent(request::withCount, clientParams, COUNT);
-            executeIfPresent(request::withPage, clientParams, PAGE);
-            executeIfPresent(request::withOrderType, clientParams, ORDER_TYPE);
-            for (Map.Entry<String, List<String>> entry : clientParams.entrySet()) {
-                request.withFilterOptions(entry.getKey(), entry.getValue().get(0));
+            for (String key : clientParams.keySet()) {
+                switch (key) {
+                    case COUNT: {
+                        request.withCount(clientParams.getFirst(key));
+                        break;
+                    }
+                    case PAGE: {
+                        request.withPage(clientParams.getFirst(key));
+                        break;
+                    }
+                    case ORDER_TYPE: {
+                        request.withOrderType(clientParams.getFirst(key));
+                        break;
+                    }
+                    default: {
+                        request.withFilterOptions(key, clientParams.getFirst(key));
+                        break;
+                    }
+                }
             }
-            SearchQuery<T> query = request.build();
-            return service.search(query);
+            return service.search(request.buildQuery());
         } catch (MalformedSearchRequestException e) {
             Response response = Response
                     .status(Response.Status.BAD_REQUEST)
@@ -57,19 +69,7 @@ abstract class ModelController<T extends Model> {
         }
     }
 
-    private void executeIfPresent(ConsumerWithException action, MultivaluedMap<String, String> queryParams, String what) throws MalformedSearchRequestException {
-        List<String> list = queryParams.get(what);
-        if (list != null) {
-            action.accept(list.get(0));
-            queryParams.remove(what);
-        }
-    }
-
     abstract String getEntityName();
 
     abstract SearchRequest<T> getEmptySearchRequest();
-
-    private interface ConsumerWithException {
-        void accept(String s) throws MalformedSearchRequestException;
-    }
 }

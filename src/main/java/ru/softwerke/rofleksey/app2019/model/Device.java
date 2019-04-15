@@ -1,6 +1,7 @@
 package ru.softwerke.rofleksey.app2019.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
@@ -12,7 +13,7 @@ public class Device implements Model {
     private static final String PRICE_FIELD = "price";
     private static final String TYPE_FIELD = "type";
     private static final String COLOR_NAME_FIELD = "colorName";
-    private static final String COLOR_RGB_FIELD = "colorRB";
+    private static final String COLOR_RGB_FIELD = "colorRGB";
     private static final String ISSUER_FIELD = "issuer";
     private static final String MODEL_FIELD = "model";
 
@@ -32,15 +33,19 @@ public class Device implements Model {
     @JsonProperty(PRICE_FIELD)
     private BigDecimal price;
 
+    @JsonIgnore
+    private double priceDouble;
+
     @JsonCreator
     public Device(
-            @NotNull @JsonProperty(value = PRICE_FIELD, required = true) String price,
+            @NotNull @JsonProperty(value = PRICE_FIELD, required = true) BigDecimal price,
             @NotNull @JsonProperty(value = TYPE_FIELD, required = true) String type,
             @NotNull @JsonProperty(value = COLOR_NAME_FIELD, required = true) String colorName,
             @NotNull @JsonProperty(value = COLOR_RGB_FIELD, required = true) int colorRGB,
             @NotNull @JsonProperty(value = ISSUER_FIELD, required = true) String issuer,
             @NotNull @JsonProperty(value = MODEL_FIELD, required = true) String model) {
-        this.price = new BigDecimal(price);
+        this.price = price;
+        this.priceDouble = price.doubleValue();
         this.type = type;
         this.colorName = colorName;
         this.colorRGB = colorRGB;
@@ -68,6 +73,19 @@ public class Device implements Model {
     }
 
     @Override
+    public String toString() {
+        return "Device{" +
+                "id=" + id +
+                ", type='" + type + '\'' +
+                ", colorName='" + colorName + '\'' +
+                ", colorRGB=" + colorRGB +
+                ", issuer='" + issuer + '\'' +
+                ", model='" + model + '\'' +
+                ", price=" + price +
+                '}';
+    }
+
+    @Override
     public long getId() {
         return id;
     }
@@ -79,6 +97,10 @@ public class Device implements Model {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public double getPriceDouble() {
+        return priceDouble;
     }
 
     public String getColorName() {

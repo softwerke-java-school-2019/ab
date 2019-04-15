@@ -8,6 +8,7 @@ import javax.ws.rs.ext.Provider;
 
 @Provider
 public class JsonProcessingExceptionMapper implements ExceptionMapper<JsonProcessingException> {
+
     @Override
     public Response toResponse(JsonProcessingException exception) {
         JSONErrorMessage message = JSONErrorMessage.create("invalid json", exception.getOriginalMessage());

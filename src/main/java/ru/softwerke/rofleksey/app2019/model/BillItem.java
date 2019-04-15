@@ -48,6 +48,15 @@ public class BillItem {
         return Objects.hash(deviceId, quantity, price);
     }
 
+    @Override
+    public String toString() {
+        return "BillItem{" +
+                "deviceId=" + deviceId +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                '}';
+    }
+
     public long getDeviceId() {
         return deviceId;
     }

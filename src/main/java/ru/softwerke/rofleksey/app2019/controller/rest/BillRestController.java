@@ -1,5 +1,7 @@
 package ru.softwerke.rofleksey.app2019.controller.rest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.softwerke.rofleksey.app2019.filter.BillRequest;
 import ru.softwerke.rofleksey.app2019.filter.SearchRequest;
 import ru.softwerke.rofleksey.app2019.model.Bill;
@@ -15,6 +17,8 @@ import java.util.List;
 @Path("/bill")
 public class BillRestController extends ModelController<Bill> {
 
+    private static Logger logger = LoggerFactory.getLogger(BillRestController.class);
+
     @Inject
     public BillRestController(DataService<Bill> service) {
         this.service = service;
@@ -24,6 +28,7 @@ public class BillRestController extends ModelController<Bill> {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Bill createBill(Bill bill) {
+        logger.info(bill.toString());
         return createEntity(bill);
     }
 

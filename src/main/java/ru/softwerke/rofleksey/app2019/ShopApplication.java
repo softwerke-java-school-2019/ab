@@ -19,22 +19,11 @@ public class ShopApplication extends ResourceConfig {
         register(new AbstractBinder() {
             @Override
             protected void configure() {
-                bindAsContract(new TypeLiteral<StorageService<Customer>>() {
-
-                }).to(new TypeLiteral<DataService<Customer>>() {
-
+                bind(new StorageService<Customer>()).to(new TypeLiteral<DataService<Customer>>() {
                 });
-
-                bindAsContract(new TypeLiteral<StorageService<Device>>() {
-
-                }).to(new TypeLiteral<DataService<Device>>() {
-
+                bind(new StorageService<Device>()).to(new TypeLiteral<DataService<Device>>() {
                 });
-
-                bindAsContract(new TypeLiteral<StorageService<Bill>>() {
-
-                }).to(new TypeLiteral<DataService<Bill>>() {
-
+                bind(new StorageService<Bill>()).to(new TypeLiteral<DataService<Bill>>() {
                 });
             }
         });
