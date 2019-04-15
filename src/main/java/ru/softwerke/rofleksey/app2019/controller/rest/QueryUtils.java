@@ -5,8 +5,17 @@ import org.apache.commons.lang3.StringUtils;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
+/**
+ * Query assertions utility class
+ */
 class QueryUtils {
 
+    /**
+     * Assert that received object is not null, otherwise throw Bad Request
+     *
+     * @param o object to test
+     * @throws WebApplicationException exception to be returned to client
+     */
     static void checkEmptyRequest(Object o) throws WebApplicationException {
         if (o == null) {
             Response response = Response
@@ -17,6 +26,12 @@ class QueryUtils {
         }
     }
 
+    /**
+     * Assert that parameter is set, otherwise throw Bad Request
+     * @param param parameter value
+     * @param paramName parameter name
+     * @throws WebApplicationException exception to be returned to client
+     */
     private static void checkMandatory(String param, String paramName) throws WebApplicationException {
         checkMandatory(param, paramName, "parameter '%s' is mandatory");
     }
@@ -32,6 +47,12 @@ class QueryUtils {
         }
     }
 
+    /**
+     * Attempt to parse long from target parameter, throw Bad Request on error
+     * @param param parameter value
+     * @param paramName parameter name
+     * @throws WebApplicationException exception to be returned to client
+     */
     private static long parseLongQueryParam(String param, String paramName) throws WebApplicationException {
         long number;
         try {
@@ -47,6 +68,12 @@ class QueryUtils {
         return number;
     }
 
+    /**
+     * Check if parameter is set and attempt to parse long from target parameter, throw Bad Request on error
+     * @param param parameter value
+     * @param paramName parameter name
+     * @throws WebApplicationException exception to be returned to client
+     */
     static long parseLongQueryParamMandatory(String param, String paramName) throws WebApplicationException {
         checkMandatory(param, paramName);
         return parseLongQueryParam(param, paramName);

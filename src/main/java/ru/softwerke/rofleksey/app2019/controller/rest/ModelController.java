@@ -15,13 +15,30 @@ abstract class ModelController<T extends Model> {
     private static final String PAGE = "page";
     private static final String ORDER_TYPE = "orderType";
 
+    /**
+     * Service providing underlying functionality
+     */
     DataService<T> service;
 
+    /**
+     * Add entity to storage
+     *
+     * @param t Entity
+     * @return The same entity with id
+     * @throws WebApplicationException if entity is null
+     */
     T createEntity(T t) throws WebApplicationException {
         QueryUtils.checkEmptyRequest(t);
         return service.addEntity(t);
     }
 
+    /**
+     * Get entity by id
+     *
+     * @param idParam String representation of id
+     * @return entity with target id
+     * @throws WebApplicationException If string is not a number or the entity doesn't exist
+     */
     T getEntityById(String idParam) throws WebApplicationException {
         long id = QueryUtils.parseLongQueryParamMandatory(idParam, "id");
         T t = service.getEntityById(id);
@@ -36,6 +53,13 @@ abstract class ModelController<T extends Model> {
         return t;
     }
 
+    /**
+     * Search entities
+     *
+     * @param clientParams Search parameters
+     * @return list of entities fitting the search criteria
+     * @throws WebApplicationException if search parameters are malformed
+     */
     List<T> search(MultivaluedMap<String, String> clientParams) throws WebApplicationException {
         try {
             SearchRequest<T> request = getEmptySearchRequest();
@@ -69,7 +93,13 @@ abstract class ModelController<T extends Model> {
         }
     }
 
+    /**
+     * @return Entity name
+     */
     abstract String getEntityName();
 
+    /**
+     * @return Default search parameters
+     */
     abstract SearchRequest<T> getEmptySearchRequest();
 }

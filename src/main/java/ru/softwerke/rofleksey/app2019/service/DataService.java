@@ -5,6 +5,11 @@ import ru.softwerke.rofleksey.app2019.storage.SearchQuery;
 
 import java.util.List;
 
+/**
+ * Basically same as Storage
+ *
+ * @param <T> entity type
+ */
 public interface DataService<T extends Model> {
     T addEntity(T entity);
 

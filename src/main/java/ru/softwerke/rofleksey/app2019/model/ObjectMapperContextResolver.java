@@ -7,6 +7,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
+/**
+ * Replaces default ObjectMapper with the one that can serialize/deserialize java time objects, e.g. LocalDate e.t.c.
+ */
 @Provider
 public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper> {
     private final ObjectMapper MAPPER;

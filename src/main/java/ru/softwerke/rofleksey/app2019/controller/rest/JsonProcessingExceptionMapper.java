@@ -6,6 +6,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+/**
+ * Handler of JSON serialization/deserialization errors. Automatically responds with Bad Request on error
+ */
 @Provider
 public class JsonProcessingExceptionMapper implements ExceptionMapper<JsonProcessingException> {
 

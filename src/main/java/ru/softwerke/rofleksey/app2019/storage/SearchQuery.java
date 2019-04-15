@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+/**
+ * @param <T> Search query
+ */
 public class SearchQuery<T extends Model> {
     private final List<Predicate<T>> filters;
     private final Comparator<T> comparator;
@@ -20,6 +23,12 @@ public class SearchQuery<T extends Model> {
         this.page = page;
     }
 
+    /**
+     * Applies search query to the stream of entities
+     *
+     * @param stream stream
+     * @return filtered and sorted stream
+     */
     Stream<T> apply(Stream<T> stream) {
         for (Predicate<T> predicate : filters) {
             stream = stream.filter(predicate);

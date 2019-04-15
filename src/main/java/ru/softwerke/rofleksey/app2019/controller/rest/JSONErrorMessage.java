@@ -1,5 +1,8 @@
 package ru.softwerke.rofleksey.app2019.controller.rest;
 
+/**
+ * JSON error representation
+ */
 public class JSONErrorMessage {
     private final ErrorDescription error;
 
@@ -7,6 +10,13 @@ public class JSONErrorMessage {
         this.error = e;
     }
 
+    /**
+     * Constructs error representation
+     *
+     * @param type error type
+     * @param msg  error message
+     * @return error representation
+     */
     static JSONErrorMessage create(String type, String msg) {
         return new JSONErrorMessage(new ErrorDescription(type, msg));
     }
