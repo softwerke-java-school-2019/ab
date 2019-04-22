@@ -9,7 +9,7 @@ import java.util.function.Function;
  */
 class SearchRequestUtils {
     /**
-     * Attempts to parse string using specified function, returns MalformeredSearchRequestException on fail
+     * Attempts to parse string using specified function, throws MalformedSearchRequestException on fail
      * <p>
      * Parsing is considered a failure if NumberFormatException or DateTimeParseException is thrown
      *

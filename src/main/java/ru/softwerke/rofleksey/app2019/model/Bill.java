@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,10 +29,13 @@ public class Bill implements Model {
     private final long clientId;
 
     @JsonProperty(ITEMS_LIST_FIELD)
+    @Valid
+    @NotNull(message = "'items' field is null")
     private final List<BillItem> items;
 
     @JsonProperty(DATE_FIELD)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
+    @NotNull(message = "date is null")
     private final LocalDateTime date;
 
     @JsonIgnore
@@ -54,7 +58,7 @@ public class Bill implements Model {
             @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT) LocalDateTime date) {
         this.clientId = clientId;
         this.items = items;
-        this.totalPrice = this.items.stream().map(BillItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.totalPrice = this.items == null ? BigDecimal.ZERO : this.items.stream().map(BillItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
         this.date = date;
         this.dateLong = date.toInstant(ZoneOffset.UTC).toEpochMilli();
         this.dateStartOfTheDayLong = LocalDateTime.of(date.toLocalDate(), LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC).toEpochMilli();

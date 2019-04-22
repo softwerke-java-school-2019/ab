@@ -10,6 +10,7 @@ import ru.softwerke.rofleksey.app2019.service.DataService;
 import ru.softwerke.rofleksey.app2019.service.StorageService;
 
 import javax.ws.rs.ApplicationPath;
+import java.util.LinkedHashMap;
 
 @ApplicationPath("/")
 public class ShopApplication extends ResourceConfig {
@@ -27,5 +28,12 @@ public class ShopApplication extends ResourceConfig {
                 });
             }
         });
+//        register(JsonParseExceptionMapper.class);
+//        register(JsonMappingExceptionMapper.class);
+//        register(InvalidFormatExceptionHandler.class);
+//        register(UnrecognizedPropertyExceptionMapper.class);
+        setProperties(new LinkedHashMap<String, Object>() {{
+            put(org.glassfish.jersey.server.ServerProperties.PROCESSING_RESPONSE_ERRORS_ENABLED, true);
+        }});
     }
 }

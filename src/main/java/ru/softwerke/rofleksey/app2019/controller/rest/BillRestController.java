@@ -6,6 +6,7 @@ import ru.softwerke.rofleksey.app2019.model.Bill;
 import ru.softwerke.rofleksey.app2019.service.DataService;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -23,7 +24,7 @@ public class BillRestController extends ModelController<Bill> {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Bill createBill(Bill bill) {
+    public Bill createBill(@Valid Bill bill) {
         return createEntity(bill);
     }
 

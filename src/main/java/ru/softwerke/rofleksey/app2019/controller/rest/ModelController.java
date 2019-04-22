@@ -83,7 +83,15 @@ abstract class ModelController<T extends Model> {
                     }
                 }
             }
-            return service.search(request.buildQuery());
+            List<T> list = service.search(request.buildQuery());
+            if (list.isEmpty()) {
+                Response response = Response
+                        .status(Response.Status.NOT_FOUND)
+                        .entity(JSONErrorMessage.create("empty result", "result is empty"))
+                        .build();
+                throw new WebApplicationException(response);
+            }
+            return list;
         } catch (MalformedSearchRequestException e) {
             Response response = Response
                     .status(Response.Status.BAD_REQUEST)

@@ -20,6 +20,7 @@ public class BillItem {
     private final int quantity;
 
     @JsonProperty(PRICE_FIELD)
+    @NotNull
     private final BigDecimal price;
 
     @JsonCreator

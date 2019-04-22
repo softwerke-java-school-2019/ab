@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Objects;
 
+
 public class Customer implements Model {
     private static final String ID_FIELD = "id";
     private static final String FIRST_NAME_FIELD = "firstName";
@@ -23,8 +24,11 @@ public class Customer implements Model {
     private long id;
 
     @JsonProperty(FIRST_NAME_FIELD)
+    @NotNull(message = "firstName is null")
     private final String firstName;
+
     @JsonProperty(PATRONYMIC_FIELD)
+    @NotNull(message = "patronymic is null")
     private final String patronymic;
 
     @JsonProperty(LAST_NAME_FIELD)
@@ -32,6 +36,7 @@ public class Customer implements Model {
 
     @JsonProperty(BIRTH_DATE_FIELD)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
+    @NotNull(message = "birthDate is null")
     private final LocalDate birthDate;
 
     @JsonIgnore

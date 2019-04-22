@@ -6,6 +6,7 @@ import ru.softwerke.rofleksey.app2019.model.Device;
 import ru.softwerke.rofleksey.app2019.service.DataService;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -22,7 +23,7 @@ public class DeviceRestController extends ModelController<Device> {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Device createDevice(Device device) {
+    public Device createDevice(@Valid Device device) {
         return createEntity(device);
     }
 

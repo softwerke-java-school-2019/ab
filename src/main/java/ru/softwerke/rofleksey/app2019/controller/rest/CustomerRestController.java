@@ -6,6 +6,7 @@ import ru.softwerke.rofleksey.app2019.model.Customer;
 import ru.softwerke.rofleksey.app2019.service.DataService;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -22,7 +23,7 @@ public class CustomerRestController extends ModelController<Customer> {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Customer createCustomer(Customer customer) {
+    public Customer createCustomer(@Valid Customer customer) {
         return createEntity(customer);
     }
 

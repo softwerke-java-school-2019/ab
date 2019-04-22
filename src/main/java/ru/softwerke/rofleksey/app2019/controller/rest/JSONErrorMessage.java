@@ -17,7 +17,7 @@ public class JSONErrorMessage {
      * @param msg  error message
      * @return error representation
      */
-    static JSONErrorMessage create(String type, String msg) {
+    public static JSONErrorMessage create(String type, String msg) {
         return new JSONErrorMessage(new ErrorDescription(type, msg));
     }
 

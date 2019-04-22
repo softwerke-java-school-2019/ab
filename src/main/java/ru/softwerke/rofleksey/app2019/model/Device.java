@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+
 public class Device implements Model {
     private static final String ID_FIELD = "id";
     private static final String PRICE_FIELD = "price";
@@ -20,17 +21,29 @@ public class Device implements Model {
 
     @JsonProperty(ID_FIELD)
     private long id;
+
     @JsonProperty(TYPE_FIELD)
+    @NotNull(message = "type is null")
     private final String type;
+
     @JsonProperty(COLOR_NAME_FIELD)
+    @NotNull(message = "colorName is null")
     private final String colorName;
+
     @JsonProperty(COLOR_RGB_FIELD)
+    @NotNull
     private final int colorRGB;
+
     @JsonProperty(ISSUER_FIELD)
+    @NotNull(message = "issuer is null")
     private final String issuer;
+
     @JsonProperty(MODEL_FIELD)
+    @NotNull(message = "model is null")
     private final String model;
+
     @JsonProperty(PRICE_FIELD)
+    @NotNull(message = "price is null")
     private BigDecimal price;
 
     @JsonIgnore
