@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.Objects;
 
 public class Bill implements Model {
+    public static final String DATE_FORMAT = "dd.MM.yyyy HH:mm:ss";
+
     private static final String ID_FIELD = "id";
     private static final String CLIENT_ID_FIELD = "clientId";
     private static final String ITEMS_LIST_FIELD = "items";
     private static final String DATE_FIELD = "date";
-
-    public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
 
     @JsonProperty(ID_FIELD)
     private long id = -1;
@@ -31,7 +31,7 @@ public class Bill implements Model {
     @JsonProperty(ITEMS_LIST_FIELD)
     @Valid
     @NotNull(message = "'items' field is null")
-    private final List<BillItem> items;
+    private final List<@Valid @NotNull(message = "'items' array contains null objects") BillItem> items;
 
     @JsonProperty(DATE_FIELD)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
@@ -39,10 +39,10 @@ public class Bill implements Model {
     private final LocalDateTime date;
 
     @JsonIgnore
-    private final long dateLong;
+    private long dateLong;
 
     @JsonIgnore
-    private final long dateStartOfTheDayLong;
+    private long dateStartOfTheDayLong;
 
     @JsonIgnore
     private BigDecimal totalPrice;
@@ -52,17 +52,13 @@ public class Bill implements Model {
 
     @JsonCreator
     public Bill(
-            @NotNull @JsonProperty(value = CLIENT_ID_FIELD, required = true) long clientId,
-            @NotNull @JsonProperty(value = ITEMS_LIST_FIELD, required = true) List<BillItem> items,
-            @NotNull @JsonProperty(value = DATE_FIELD, required = true)
+            @JsonProperty(value = CLIENT_ID_FIELD, required = true) long clientId,
+            @JsonProperty(value = ITEMS_LIST_FIELD, required = true) List<BillItem> items,
+            @JsonProperty(value = DATE_FIELD, required = true)
             @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT) LocalDateTime date) {
         this.clientId = clientId;
         this.items = items;
-        this.totalPrice = this.items == null ? BigDecimal.ZERO : this.items.stream().map(BillItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
         this.date = date;
-        this.dateLong = date.toInstant(ZoneOffset.UTC).toEpochMilli();
-        this.dateStartOfTheDayLong = LocalDateTime.of(date.toLocalDate(), LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC).toEpochMilli();
-        this.totalPriceDouble = this.totalPrice.doubleValue();
     }
 
 
@@ -100,6 +96,14 @@ public class Bill implements Model {
     @Override
     public void setId(long id) {
         this.id = id;
+    }
+
+    @Override
+    public void init() {
+        this.totalPrice = this.items.stream().map(BillItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.totalPriceDouble = this.totalPrice.doubleValue();
+        this.dateLong = date.toInstant(ZoneOffset.UTC).toEpochMilli();
+        this.dateStartOfTheDayLong = LocalDateTime.of(date.toLocalDate(), LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC).toEpochMilli();
     }
 
     public boolean containsDevice(long id) {

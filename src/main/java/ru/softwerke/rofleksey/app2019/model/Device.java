@@ -10,8 +10,10 @@ import java.util.Objects;
 
 
 public class Device implements Model {
+    public static final String DATE_FORMAT = "dd.MM.yyyy";
     private static final String ID_FIELD = "id";
     private static final String PRICE_FIELD = "price";
+    private static final String DATE_FIELD = "date";
     private static final String TYPE_FIELD = "type";
     private static final String COLOR_NAME_FIELD = "colorName";
     private static final String COLOR_RGB_FIELD = "colorRGB";
@@ -24,7 +26,7 @@ public class Device implements Model {
 
     @JsonProperty(TYPE_FIELD)
     @NotNull(message = "type is null")
-    private final String type;
+    private final DeviceType type;
 
     @JsonProperty(COLOR_NAME_FIELD)
     @NotNull(message = "colorName is null")
@@ -51,14 +53,13 @@ public class Device implements Model {
 
     @JsonCreator
     public Device(
-            @NotNull @JsonProperty(value = PRICE_FIELD, required = true) BigDecimal price,
-            @NotNull @JsonProperty(value = TYPE_FIELD, required = true) String type,
-            @NotNull @JsonProperty(value = COLOR_NAME_FIELD, required = true) String colorName,
-            @NotNull @JsonProperty(value = COLOR_RGB_FIELD, required = true) int colorRGB,
-            @NotNull @JsonProperty(value = ISSUER_FIELD, required = true) String issuer,
-            @NotNull @JsonProperty(value = MODEL_FIELD, required = true) String model) {
+            @JsonProperty(value = PRICE_FIELD, required = true) BigDecimal price,
+            @JsonProperty(value = TYPE_FIELD, required = true) DeviceType type,
+            @JsonProperty(value = COLOR_NAME_FIELD, required = true) String colorName,
+            @JsonProperty(value = COLOR_RGB_FIELD, required = true) int colorRGB,
+            @JsonProperty(value = ISSUER_FIELD, required = true) String issuer,
+            @JsonProperty(value = MODEL_FIELD, required = true) String model) {
         this.price = price;
-        this.priceDouble = price.doubleValue();
         this.type = type;
         this.colorName = colorName;
         this.colorRGB = colorRGB;
@@ -108,6 +109,11 @@ public class Device implements Model {
         this.id = id;
     }
 
+    @Override
+    public void init() {
+        priceDouble = price.doubleValue();
+    }
+
     public BigDecimal getPrice() {
         return price;
     }
@@ -120,7 +126,7 @@ public class Device implements Model {
         return colorName;
     }
 
-    public String getType() {
+    public DeviceType getType() {
         return type;
     }
 

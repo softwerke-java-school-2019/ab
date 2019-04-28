@@ -1,6 +1,7 @@
-package ru.softwerke.rofleksey.app2019.controller.rest;
+package ru.softwerke.rofleksey.app2019.handlers;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import ru.softwerke.rofleksey.app2019.controller.rest.JSONErrorMessage;
 
 import javax.annotation.Priority;
 import javax.inject.Singleton;
@@ -17,7 +18,7 @@ import javax.ws.rs.ext.Provider;
 @Priority(1)
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
-public class JsonParseExceptionMapper implements ExceptionMapper<JsonParseException> {
+public class JsonParseExceptionHandler implements ExceptionMapper<JsonParseException> {
 
     @Override
     public Response toResponse(JsonParseException exception) {

@@ -12,12 +12,12 @@ import java.util.Objects;
 
 
 public class Customer implements Model {
+    public static final String DATE_FORMAT = "dd.MM.yyyy";
     private static final String ID_FIELD = "id";
     private static final String FIRST_NAME_FIELD = "firstName";
-    public static final String DATE_FORMAT = "dd-MM-yyyy";
     private static final String LAST_NAME_FIELD = "lastName";
-    private static final String BIRTH_DATE_FIELD = "birthDate";
-    private static final String PATRONYMIC_FIELD = "patronymic";
+    private static final String BIRTH_DATE_FIELD = "birthdate";
+    private static final String MIDDLE_NAME_FIELD = "middleName";
 
 
     @JsonProperty(ID_FIELD)
@@ -27,11 +27,12 @@ public class Customer implements Model {
     @NotNull(message = "firstName is null")
     private final String firstName;
 
-    @JsonProperty(PATRONYMIC_FIELD)
-    @NotNull(message = "patronymic is null")
-    private final String patronymic;
+    @JsonProperty(MIDDLE_NAME_FIELD)
+    @NotNull(message = "middleName is null")
+    private final String middleName;
 
     @JsonProperty(LAST_NAME_FIELD)
+    @NotNull(message = "lastName is null")
     private final String lastName;
 
     @JsonProperty(BIRTH_DATE_FIELD)
@@ -40,22 +41,20 @@ public class Customer implements Model {
     private final LocalDate birthDate;
 
     @JsonIgnore
-    private final long birthDateLong;
+    private long birthDateLong;
 
     @JsonIgnore
-    private final String fullName;
+    private String fullName;
 
     @JsonCreator
-    public Customer(@NotNull @JsonProperty(value = FIRST_NAME_FIELD, required = true) String firstName,
-                    @NotNull @JsonProperty(value = PATRONYMIC_FIELD, required = true) String patronymic,
-                    @NotNull @JsonProperty(value = LAST_NAME_FIELD, required = true) String lastName,
-                    @NotNull @JsonProperty(value = BIRTH_DATE_FIELD, required = true) LocalDate birthDate) {
+    public Customer(@JsonProperty(value = FIRST_NAME_FIELD, required = true) String firstName,
+                    @JsonProperty(value = MIDDLE_NAME_FIELD, required = true) String middleName,
+                    @JsonProperty(value = LAST_NAME_FIELD, required = true) String lastName,
+                    @JsonProperty(value = BIRTH_DATE_FIELD, required = true) LocalDate birthDate) {
         this.firstName = firstName;
-        this.patronymic = patronymic;
+        this.middleName = middleName;
         this.lastName = lastName;
-        this.fullName = firstName + " " + patronymic + " " + lastName;
         this.birthDate = birthDate;
-        this.birthDateLong = birthDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
     }
 
 
@@ -66,7 +65,7 @@ public class Customer implements Model {
         Customer that = (Customer) o;
         return id == that.id &&
                 Objects.equals(firstName, that.firstName) &&
-                Objects.equals(patronymic, that.patronymic) &&
+                Objects.equals(middleName, that.middleName) &&
                 Objects.equals(lastName, that.lastName) &&
                 Objects.equals(birthDate, that.birthDate);
     }
@@ -80,7 +79,7 @@ public class Customer implements Model {
         return "Customer{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
-                ", patronymic='" + patronymic + '\'' +
+                ", middleName='" + middleName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", birthDate=" + birthDate +
                 ", birthDateLong=" + birthDateLong +
@@ -93,12 +92,18 @@ public class Customer implements Model {
         this.id = id;
     }
 
+    @Override
+    public void init() {
+        fullName = firstName + " " + middleName + " " + lastName;
+        birthDateLong = birthDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+    }
+
     public String getFirstName() {
         return firstName;
     }
 
-    public String getPatronymic() {
-        return patronymic;
+    public String getMiddleName() {
+        return middleName;
     }
 
     public String getLastName() {
@@ -119,6 +124,6 @@ public class Customer implements Model {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, patronymic, lastName, birthDate);
+        return Objects.hash(id, firstName, middleName, lastName, birthDate);
     }
 }

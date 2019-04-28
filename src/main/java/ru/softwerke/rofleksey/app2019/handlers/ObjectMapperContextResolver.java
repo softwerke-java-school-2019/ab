@@ -1,4 +1,4 @@
-package ru.softwerke.rofleksey.app2019.model;
+package ru.softwerke.rofleksey.app2019.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

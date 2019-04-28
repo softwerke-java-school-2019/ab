@@ -29,6 +29,7 @@ abstract class ModelController<T extends Model> {
      */
     T createEntity(T t) throws WebApplicationException {
         QueryUtils.checkEmptyRequest(t);
+        t.init();
         return service.addEntity(t);
     }
 

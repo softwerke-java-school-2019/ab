@@ -1,6 +1,7 @@
-package ru.softwerke.rofleksey.app2019.controller.rest;
+package ru.softwerke.rofleksey.app2019.handlers;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import ru.softwerke.rofleksey.app2019.controller.rest.JSONErrorMessage;
 
 import javax.annotation.Priority;
 import javax.inject.Singleton;

@@ -1,6 +1,7 @@
-package ru.softwerke.rofleksey.app2019.controller.rest;
+package ru.softwerke.rofleksey.app2019.handlers;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import ru.softwerke.rofleksey.app2019.controller.rest.JSONErrorMessage;
 
 import javax.annotation.Priority;
 import javax.inject.Singleton;
@@ -17,7 +18,7 @@ import javax.ws.rs.ext.Provider;
 @Priority(1)
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
-public class JsonMappingExceptionMapper implements ExceptionMapper<JsonMappingException> {
+public class JsonMappingExceptionHandler implements ExceptionMapper<JsonMappingException> {
 
     @Override
     public Response toResponse(JsonMappingException exception) {

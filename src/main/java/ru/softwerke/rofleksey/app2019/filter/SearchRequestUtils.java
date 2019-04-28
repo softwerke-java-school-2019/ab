@@ -26,6 +26,8 @@ class SearchRequestUtils {
             throw new MalformedSearchRequestException("number expected", numberString);
         } catch (DateTimeParseException e) {
             throw new MalformedSearchRequestException("invalid date/time format", numberString);
+        } catch (IllegalArgumentException e) {
+            throw new MalformedSearchRequestException("invalid enum type", numberString);
         }
     }
 

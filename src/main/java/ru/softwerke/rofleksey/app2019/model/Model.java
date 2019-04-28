@@ -15,4 +15,10 @@ public interface Model {
      * @param id id
      */
     void setId(long id);
+
+
+    /**
+     * precalculates fields after object deserialization and validation
+     */
+    void init();
 }

@@ -1,7 +1,10 @@
 package ru.softwerke.rofleksey.app2019.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.softwerke.rofleksey.app2019.model.Device;
+import ru.softwerke.rofleksey.app2019.model.DeviceType;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -20,6 +23,7 @@ public class DeviceRequest extends SearchRequest<Device> {
 
     private static final Map<String, FilterFactory<Device>> filterFactories;
     private static final Map<String, Comparator<Device>> comparators;
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     static {
         Map<String, FilterFactory<Device>> filterFactoriesTemp = new HashMap<>();
@@ -36,7 +40,16 @@ public class DeviceRequest extends SearchRequest<Device> {
             double price = SearchRequestUtils.parseString(p, Double::valueOf);
             return device -> Double.compare(device.getPriceDouble(), price) <= 0;
         });
-        filterFactoriesTemp.put(TYPE_CRITERIA, type -> d -> d.getType().equals(type));
+        filterFactoriesTemp.put(TYPE_CRITERIA, t -> {
+            DeviceType type = SearchRequestUtils.parseString(t, it -> {
+                try {
+                    return mapper.readValue("\"" + it + "\"", DeviceType.class);
+                } catch (IOException e) {
+                    throw new IllegalArgumentException();
+                }
+            });
+            return device -> device.getType().equals(type);
+        });
         filterFactoriesTemp.put(COLOR_NAME_CRITERIA, name -> d -> d.getColorName().equals(name));
         filterFactoriesTemp.put(COLOR_RGB_CRITERIA, color -> {
             int colorInt = SearchRequestUtils.parseString(color, Integer::valueOf);

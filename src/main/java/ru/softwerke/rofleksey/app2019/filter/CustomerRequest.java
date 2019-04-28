@@ -16,7 +16,7 @@ public class CustomerRequest extends SearchRequest<Customer> {
     private static final String MIDDLE_NAME_CRITERIA = "middleName";
     private static final String LAST_NAME_CRITERIA = "lastName";
     private static final String FULL_NAME_CRITERIA = "fullName";
-    private static final String BIRTH_DATE_CRITERIA = "birthDate";
+    private static final String BIRTH_DATE_CRITERIA = "birthdate";
 
     private static final Map<String, FilterFactory<Customer>> filterFactories;
     private static final Map<String, Comparator<Customer>> comparators;
@@ -27,7 +27,7 @@ public class CustomerRequest extends SearchRequest<Customer> {
         Map<String, FilterFactory<Customer>> filterFactoriesTemp = new HashMap<>();
         Map<String, Comparator<Customer>> comparatorTemp = new HashMap<>();
         filterFactoriesTemp.put(FIRST_NAME_CRITERIA, name -> c -> c.getFirstName().equals(name));
-        filterFactoriesTemp.put(MIDDLE_NAME_CRITERIA, name -> c -> c.getPatronymic().equals(name));
+        filterFactoriesTemp.put(MIDDLE_NAME_CRITERIA, name -> c -> c.getMiddleName().equals(name));
         filterFactoriesTemp.put(LAST_NAME_CRITERIA, name -> c -> c.getLastName().equals(name));
         filterFactoriesTemp.put(FULL_NAME_CRITERIA, name -> c -> c.getFullName().equals(name));
         filterFactoriesTemp.put(BIRTH_DATE_CRITERIA, date -> {
@@ -37,7 +37,7 @@ public class CustomerRequest extends SearchRequest<Customer> {
         });
         comparatorTemp.put(ID_CRITERIA, Comparator.comparing(Customer::getId));
         comparatorTemp.put(FIRST_NAME_CRITERIA, Comparator.comparing(Customer::getFirstName));
-        comparatorTemp.put(MIDDLE_NAME_CRITERIA, Comparator.comparing(Customer::getPatronymic));
+        comparatorTemp.put(MIDDLE_NAME_CRITERIA, Comparator.comparing(Customer::getMiddleName));
         comparatorTemp.put(LAST_NAME_CRITERIA, Comparator.comparing(Customer::getLastName));
         comparatorTemp.put(FULL_NAME_CRITERIA, Comparator.comparing(Customer::getFullName));
         comparatorTemp.put(BIRTH_DATE_CRITERIA, Comparator.comparing(Customer::getBirthDateLong));
