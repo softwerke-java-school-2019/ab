@@ -10,13 +10,17 @@ public class Color implements Model {
     private static final String ID_FIELD = "id";
     private static final String NAME_FIELD = "name";
     private static final String RGB_FIELD = "rgb";
+
+    @JsonProperty(ID_FIELD)
+    private long id;
+
     @JsonProperty(NAME_FIELD)
     @NotBlank(message = "name is empty or null")
     private final String name;
+
     @JsonProperty(RGB_FIELD)
     private final int rgb;
-    @JsonProperty(ID_FIELD)
-    private long id;
+
 
     @JsonCreator
     public Color(
@@ -26,8 +30,8 @@ public class Color implements Model {
         this.rgb = rgb;
     }
 
-    public Color(String name, int red, int green, int blue) {
-        this(name, ((red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff));
+    public static Color fromRGB(String name, int red, int green, int blue) {
+        return new Color(name, ((red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff));
     }
 
     public String getName() {

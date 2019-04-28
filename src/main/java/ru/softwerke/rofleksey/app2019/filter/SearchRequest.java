@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+//TODO: max(pageItems)=1000, min(page)=1
+
 /**
  * Builder of SearchQuery
  *

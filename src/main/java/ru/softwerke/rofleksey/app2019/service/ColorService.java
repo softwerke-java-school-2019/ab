@@ -6,9 +6,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ColorService extends StorageService<Color> {
+    private static final ColorService INSTANCE = new ColorService();
+
     private final Map<String, Color> nameMap;
 
-    public ColorService() {
+    private ColorService() {
         super();
         nameMap = new ConcurrentHashMap<>();
     }
@@ -18,6 +20,10 @@ public class ColorService extends StorageService<Color> {
     public Color addEntity(Color entity) {
         nameMap.put(entity.getName(), entity);
         return super.addEntity(entity);
+    }
+
+    public static ColorService getInstance() {
+        return INSTANCE;
     }
 
     public Color getByName(String name) {

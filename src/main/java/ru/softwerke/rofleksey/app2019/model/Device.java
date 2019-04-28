@@ -3,7 +3,10 @@ package ru.softwerke.rofleksey.app2019.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import ru.softwerke.rofleksey.app2019.handlers.ColorDeserializer;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -29,16 +32,17 @@ public class Device implements Model {
     @NotNull(message = "type is null")
     private final DeviceType type;
 
-    @JsonProperty(COLOR_NAME_FIELD)
-    @NotBlank(message = "colorName is empty or null")
-    private final String colorName;
     @JsonProperty(ISSUER_FIELD)
     @NotBlank(message = "issuer is empty or null")
     private final String issuer;
+
     @JsonProperty(MODEL_FIELD)
     @NotBlank(message = "model is empty or null")
     private final String model;
-    @JsonProperty(COLOR_RGB_FIELD)
+
+    @JsonIgnore
+    @NotNull(message = "color is null")
+    @Valid
     private Color color;
 
     @JsonProperty(PRICE_FIELD)
@@ -52,12 +56,12 @@ public class Device implements Model {
     public Device(
             @JsonProperty(value = PRICE_FIELD, required = true) BigDecimal price,
             @JsonProperty(value = TYPE_FIELD, required = true) DeviceType type,
-            @JsonProperty(value = COLOR_NAME_FIELD) String colorName,
+            @JsonProperty(value = COLOR_NAME_FIELD, required = true) @JsonDeserialize(using = ColorDeserializer.class) Color color,
             @JsonProperty(value = ISSUER_FIELD, required = true) String issuer,
             @JsonProperty(value = MODEL_FIELD, required = true) String model) {
         this.price = price;
         this.type = type;
-        this.colorName = colorName;
+        this.color = color;
         this.issuer = issuer;
         this.model = model;
     }
@@ -85,6 +89,7 @@ public class Device implements Model {
         return priceDouble;
     }
 
+    @JsonProperty(COLOR_NAME_FIELD)
     public String getColorName() {
         return color.getName();
     }
@@ -93,6 +98,7 @@ public class Device implements Model {
         return type;
     }
 
+    @JsonProperty(COLOR_RGB_FIELD)
     public int getColorRGB() {
         return color.getRgb();
     }

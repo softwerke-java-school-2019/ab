@@ -30,27 +30,8 @@ abstract class ModelController<T extends Model> {
      */
     T createEntity(T entity) throws WebApplicationException {
         QueryUtils.checkEmptyRequest(entity);
-        JSONErrorMessage errorMessage = validate(entity);
-        if (errorMessage != null) {
-            Response response = Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(errorMessage)
-                    .build();
-            throw new WebApplicationException(response);
-        }
         entity.init();
         return service.addEntity(entity);
-    }
-
-
-    /**
-     * Validates target entity
-     *
-     * @param entity entity to validate
-     * @return null if entity is OK, JSONErrorMessage otherwise
-     */
-    JSONErrorMessage validate(T entity) {
-        return null;
     }
 
     /**

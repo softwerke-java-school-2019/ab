@@ -14,6 +14,10 @@ import ru.softwerke.rofleksey.app2019.service.StorageService;
 import javax.ws.rs.ApplicationPath;
 import java.util.LinkedHashMap;
 
+
+//TODO: README.md
+//TODO: remove 'message' fields
+
 @ApplicationPath("/")
 public class ShopApplication extends ResourceConfig {
     public ShopApplication() {
@@ -37,22 +41,22 @@ public class ShopApplication extends ResourceConfig {
     }
 
     private ColorService colorService() {
-        ColorService service = new ColorService();
-        service.addEntity(new Color("black", 0, 0, 0));
-        service.addEntity(new Color("gray", 128, 128, 128));
-        service.addEntity(new Color("red", 255, 0, 0));
-        service.addEntity(new Color("golden", 255, 215, 0));
-        service.addEntity(new Color("blue", 0, 0, 255));
-        service.addEntity(new Color("silver", 192, 192, 192));
-        service.addEntity(new Color("white", 255, 255, 255));
-        service.addEntity(new Color("brown", 150, 75, 0));
-        service.addEntity(new Color("orange", 255, 165, 0));
-        service.addEntity(new Color("beige", 245, 245, 220));
-        service.addEntity(new Color("yellow", 255, 255, 0));
-        service.addEntity(new Color("green", 0, 128, 0));
-        service.addEntity(new Color("light blue", 66, 170, 255));
-        service.addEntity(new Color("purple", 139, 0, 255));
-        service.addEntity(new Color("pink", 252, 15, 192));
+        ColorService service = ColorService.getInstance();
+        service.addEntity(Color.fromRGB("black", 0, 0, 0));
+        service.addEntity(Color.fromRGB("gray", 128, 128, 128));
+        service.addEntity(Color.fromRGB("red", 255, 0, 0));
+        service.addEntity(Color.fromRGB("golden", 255, 215, 0));
+        service.addEntity(Color.fromRGB("blue", 0, 0, 255));
+        service.addEntity(Color.fromRGB("silver", 192, 192, 192));
+        service.addEntity(Color.fromRGB("white", 255, 255, 255));
+        service.addEntity(Color.fromRGB("brown", 150, 75, 0));
+        service.addEntity(Color.fromRGB("orange", 255, 165, 0));
+        service.addEntity(Color.fromRGB("beige", 245, 245, 220));
+        service.addEntity(Color.fromRGB("yellow", 255, 255, 0));
+        service.addEntity(Color.fromRGB("green", 0, 128, 0));
+        service.addEntity(Color.fromRGB("light blue", 66, 170, 255));
+        service.addEntity(Color.fromRGB("purple", 139, 0, 255));
+        service.addEntity(Color.fromRGB("pink", 252, 15, 192));
         return service;
     }
 }
