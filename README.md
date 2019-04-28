@@ -11,8 +11,8 @@ POST /api/<entity> (Body: JSON)
 ```
 list of entities and their JSON-representation:
 * `customer {first_name: String, middle_name: String, last_name: String, birth_date: long}`
-* `device {price: String, type: String, color_name: String, color_rgb: int, issuer: String, model: String}`
-* `bill {client_id: long, items_list: [BillItem], date: long, time: long}`
+* `device {price: String, type: String, color_name: String, color_rgb: int, manufacturer: String, modelName: String}`
+* `bill {client_id: long, items_list: [BillItem], manufactureDate: long, time: long}`
 
 BillItem has JSON-form `{device_id: long, quantity: int, price: String}` and is not considered an entity
 
@@ -21,7 +21,7 @@ BillItem has JSON-form `{device_id: long, quantity: int, price: String}` and is 
   * id
   * price_total (Bill)
   * cliend_id (Bill)
-  * date (Bill, Device)
+  * manufactureDate (Bill, Device)
   * first_name (Customer)
   * middle_name (Customer)
   * last_name (Customer)
@@ -30,8 +30,8 @@ BillItem has JSON-form `{device_id: long, quantity: int, price: String}` and is 
   * type (Device)
   * color_name (Device)
   * color_rgb (Device)
-  * issuer (Device)
-  * model (Device)
+  * manufacturer (Device)
+  * modelName (Device)
 * filterBy : String - not required
   * anything from orderBy (except for id)
   * price_total_equal (Bill)
@@ -44,12 +44,12 @@ BillItem has JSON-form `{device_id: long, quantity: int, price: String}` and is 
 ### request examples
 
 ```
-GET /api/bill?orderBy=date
+GET /api/bill?orderBy=manufactureDate
 GET /api/customer?filterBy=last_name&filterValue=Privet&orderBy=middle_name
-POST /api/bill {"client_id":2,"items_list":[{"device_id":1,"quantity":22,"price":34}],"date":2,"time":69}
+POST /api/bill {"client_id":2,"items_list":[{"device_id":1,"quantity":22,"price":34}],"manufactureDate":2,"time":69}
 ```
 ### response examples
 ```
-[{"price":30000,"type":"computer","color_name":"green","color_rgb":65280,"issuer":"Sony","model":"B","id":0},{"price":9000,"type":"phone","color_name":"red","color_rgb":16711680,"issuer":"Sony","model":"A","id":1},{"price":12000,"type":"phone","color_name":"green","color_rgb":65280,"issuer":"Samsung","model":"C","id":2}]
+[{"price":30000,"type":"computer","color_name":"green","color_rgb":65280,"manufacturer":"Sony","modelName":"B","id":0},{"price":9000,"type":"phone","color_name":"red","color_rgb":16711680,"manufacturer":"Sony","modelName":"A","id":1},{"price":12000,"type":"phone","color_name":"green","color_rgb":65280,"manufacturer":"Samsung","modelName":"C","id":2}]
 [{"first_name":"Borisov","middle_name":"Aleksey","last_name":"Mikhailovich","birth_date":100,"id":0},{"first_name":"Kurilenko","middle_name":"Vlad","last_name":"Privet","birth_date":90,"id":1},{"first_name":"Solyanov","middle_name":"Ivan","last_name":"Privet","birth_date":200,"id":2}]
 ```

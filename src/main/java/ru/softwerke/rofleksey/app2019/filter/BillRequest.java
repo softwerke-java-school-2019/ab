@@ -3,7 +3,6 @@ package ru.softwerke.rofleksey.app2019.filter;
 import ru.softwerke.rofleksey.app2019.model.Bill;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -14,11 +13,10 @@ import java.util.Map;
 //TODO: test ranges
 public class BillRequest extends SearchRequest<Bill> {
     private static final String ID_CRITERIA = "id";
-    private static final String TOTAL_PRICE_CRITERIA = "priceTotal";
-    private static final String CLIENT_ID_CRITERIA = "clientId";
-    private static final String WITH_DEVICE_ID_CRITERIA = "withDeviceId";
-    private static final String DATE_CRITERIA = "date";
-    private static final String DATE_TIME_CRITERIA = "dateTime";
+    private static final String TOTAL_PRICE_CRITERIA = "totalPrice";
+    private static final String CUSTOMER_ID_CRITERIA = "customerId";
+    private static final String DEVICE_ID_CRITERIA = "deviceId";
+    private static final String PURCHASE_DATE_TIME_CRITERIA = "purchaseDateTime";
 
     private static final Map<String, FilterFactory<Bill>> filterFactories;
     private static final Map<String, Comparator<Bill>> comparators;
@@ -44,25 +42,20 @@ public class BillRequest extends SearchRequest<Bill> {
             double price = SearchRequestUtils.parseString(p, Double::valueOf);
             return bill -> Double.compare(bill.getTotalPriceDouble(), price);
         });
-        filterFactoriesTemp.put(CLIENT_ID_CRITERIA, id -> {
+        filterFactoriesTemp.put(CUSTOMER_ID_CRITERIA, id -> {
             long clientId = SearchRequestUtils.parseString(id, Long::valueOf);
-            return bill -> bill.getClientId() == clientId;
+            return bill -> bill.getCustomerId() == clientId;
         });
-        filterFactoriesTemp.put(WITH_DEVICE_ID_CRITERIA, id -> {
+        filterFactoriesTemp.put(DEVICE_ID_CRITERIA, id -> {
             long deviceId = SearchRequestUtils.parseString(id, Long::valueOf);
             return bill -> bill.containsDevice(deviceId);
         });
-        filterFactoriesTemp.put(DATE_CRITERIA, dateString -> {
-            LocalDateTime date = SearchRequestUtils.parseString(dateString, it -> LocalDateTime.parse(it, format));
-            long dateLong = date.toInstant(ZoneOffset.UTC).with(LocalTime.MIDNIGHT).toEpochMilli();
-            return bill -> bill.getDateLong() == dateLong;
-        });
-        SearchRequestUtils.addRange(filterFactoriesTemp, DATE_TIME_CRITERIA, dateString -> {
+        SearchRequestUtils.addRange(filterFactoriesTemp, PURCHASE_DATE_TIME_CRITERIA, dateString -> {
             LocalDateTime date = SearchRequestUtils.parseString(dateString, it -> LocalDateTime.parse(it, format));
             long dateLong = date.toInstant(ZoneOffset.UTC).toEpochMilli();
             return bill -> Long.compare(bill.getDateLong(), dateLong);
         });
-//        filterFactoriesTemp.put(DATE_TIME_CRITERIA, dateString -> {
+//        filterFactoriesTemp.put(PURCHASE_DATE_TIME_CRITERIA, dateString -> {
 //            LocalDateTime date = SearchRequestUtils.parseString(dateString, it -> LocalDateTime.parse(it, format));
 //            long dateLong = date.toInstant(ZoneOffset.UTC).toEpochMilli();
 //            return bill -> bill.getDateLong() == dateLong;
@@ -80,8 +73,8 @@ public class BillRequest extends SearchRequest<Bill> {
 
         comparatorTemp.put(ID_CRITERIA, Comparator.comparing(Bill::getId));
         comparatorTemp.put(TOTAL_PRICE_CRITERIA, Comparator.comparing(Bill::getTotalPriceDouble));
-        comparatorTemp.put(CLIENT_ID_CRITERIA, Comparator.comparing(Bill::getClientId));
-        comparatorTemp.put(DATE_CRITERIA, Comparator.comparing(Bill::getDateLong));
+        comparatorTemp.put(CUSTOMER_ID_CRITERIA, Comparator.comparing(Bill::getCustomerId));
+        comparatorTemp.put(PURCHASE_DATE_TIME_CRITERIA, Comparator.comparing(Bill::getDateLong));
 
         filterFactories = Collections.unmodifiableMap(filterFactoriesTemp);
         comparators = Collections.unmodifiableMap(comparatorTemp);

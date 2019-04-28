@@ -3,7 +3,6 @@ package ru.softwerke.rofleksey.app2019.controller.rest;
 import ru.softwerke.rofleksey.app2019.filter.DeviceRequest;
 import ru.softwerke.rofleksey.app2019.filter.SearchRequest;
 import ru.softwerke.rofleksey.app2019.model.Device;
-import ru.softwerke.rofleksey.app2019.service.ColorService;
 import ru.softwerke.rofleksey.app2019.service.DataService;
 
 import javax.inject.Inject;
@@ -16,12 +15,9 @@ import java.util.List;
 
 @Path("/device")
 public class DeviceRestController extends ModelController<Device> {
-    private final ColorService colorService;
-
     @Inject
-    public DeviceRestController(DataService<Device> service, ColorService colorService) {
+    public DeviceRestController(DataService<Device> service) {
         this.service = service;
-        this.colorService = colorService;
     }
 
     @POST

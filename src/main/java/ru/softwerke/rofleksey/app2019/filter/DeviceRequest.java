@@ -17,11 +17,11 @@ public class DeviceRequest extends SearchRequest<Device> {
     private static final String ID_CRITERIA = "id";
     private static final String PRICE_CRITERIA = "price";
     private static final String TYPE_CRITERIA = "type";
-    private static final String DATE_CRITERIA = "date";
+    private static final String MANUFACTURE_DATE_CRITERIA = "manufactureDate";
     private static final String COLOR_NAME_CRITERIA = "colorName";
     private static final String COLOR_RGB_CRITERIA = "colorRGB";
-    private static final String ISSUER_CRITERIA = "issuer";
-    private static final String MODEL_CRITERIA = "model";
+    private static final String MANUFACTURER_CRITERIA = "manufacturer";
+    private static final String MODEL_NAME_CRITERIA = "modelName";
 
     private static final Map<String, FilterFactory<Device>> filterFactories;
     private static final Map<String, Comparator<Device>> comparators;
@@ -47,7 +47,7 @@ public class DeviceRequest extends SearchRequest<Device> {
             double price = SearchRequestUtils.parseString(p, Double::valueOf);
             return device -> Double.compare(device.getPriceDouble(), price);
         });
-        SearchRequestUtils.addRange(filterFactoriesTemp, DATE_CRITERIA, date -> {
+        SearchRequestUtils.addRange(filterFactoriesTemp, MANUFACTURE_DATE_CRITERIA, date -> {
             LocalDate tmpDate = SearchRequestUtils.parseString(date, it -> LocalDate.parse(it, format));
             long tmpLong = tmpDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
             return device -> Long.compare(device.getDateLong(), tmpLong);
@@ -67,15 +67,15 @@ public class DeviceRequest extends SearchRequest<Device> {
             int colorInt = SearchRequestUtils.parseString(color, Integer::valueOf);
             return device -> device.getColorRGB() == colorInt;
         });
-        filterFactoriesTemp.put(ISSUER_CRITERIA, is -> d -> d.getIssuer().equals(is));
-        filterFactoriesTemp.put(MODEL_CRITERIA, m -> d -> d.getModel().equals(m));
+        filterFactoriesTemp.put(MANUFACTURER_CRITERIA, is -> d -> d.getManufacturer().equals(is));
+        filterFactoriesTemp.put(MODEL_NAME_CRITERIA, m -> d -> d.getModelName().equals(m));
         comparatorTemp.put(ID_CRITERIA, Comparator.comparing(Device::getId));
         comparatorTemp.put(PRICE_CRITERIA, Comparator.comparing(Device::getPrice));
         comparatorTemp.put(TYPE_CRITERIA, Comparator.comparing(Device::getType));
         comparatorTemp.put(COLOR_NAME_CRITERIA, Comparator.comparing(Device::getColorName));
         comparatorTemp.put(COLOR_RGB_CRITERIA, Comparator.comparing(Device::getColorRGB));
-        comparatorTemp.put(ISSUER_CRITERIA, Comparator.comparing(Device::getIssuer));
-        comparatorTemp.put(MODEL_CRITERIA, Comparator.comparing(Device::getModel));
+        comparatorTemp.put(MANUFACTURER_CRITERIA, Comparator.comparing(Device::getManufacturer));
+        comparatorTemp.put(MODEL_NAME_CRITERIA, Comparator.comparing(Device::getModelName));
 
         filterFactories = Collections.unmodifiableMap(filterFactoriesTemp);
         comparators = Collections.unmodifiableMap(comparatorTemp);

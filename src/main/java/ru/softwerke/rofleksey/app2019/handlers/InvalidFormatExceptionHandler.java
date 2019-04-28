@@ -10,10 +10,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+//TODO: custom messages for custom types
+
 /**
  * Handler of JSON syntax errors. Automatically responds with Bad Request on error
  */
-
 @Provider
 @Priority(1)
 @Produces(MediaType.APPLICATION_JSON)

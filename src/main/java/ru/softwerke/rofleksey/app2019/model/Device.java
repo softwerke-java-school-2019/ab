@@ -19,12 +19,12 @@ public class Device implements Model {
     public static final String DATE_FORMAT = "dd.MM.yyyy";
     private static final String ID_FIELD = "id";
     private static final String PRICE_FIELD = "price";
-    private static final String DATE_FIELD = "date";
+    private static final String MANUFACTURE_DATE_FIELD = "manufactureDate";
     private static final String TYPE_FIELD = "type";
     private static final String COLOR_NAME_FIELD = "colorName";
     private static final String COLOR_RGB_FIELD = "colorRGB";
-    private static final String ISSUER_FIELD = "issuer";
-    private static final String MODEL_FIELD = "model";
+    private static final String MANUFACTURER_FIELD = "manufacturer";
+    private static final String MODEL_NAME_FIELD = "modelName";
 
 
     @JsonProperty(ID_FIELD)
@@ -34,13 +34,13 @@ public class Device implements Model {
     @NotNull(message = "type is null")
     private final DeviceType type;
 
-    @JsonProperty(ISSUER_FIELD)
-    @NotBlank(message = "issuer is empty or null")
-    private final String issuer;
+    @JsonProperty(MANUFACTURER_FIELD)
+    @NotBlank(message = "manufacturer is empty or null")
+    private final String manufacturer;
 
-    @JsonProperty(MODEL_FIELD)
-    @NotBlank(message = "model is empty or null")
-    private final String model;
+    @JsonProperty(MODEL_NAME_FIELD)
+    @NotBlank(message = "modelName is empty or null")
+    private final String modelName;
 
     @JsonIgnore
     @NotNull(message = "color is null")
@@ -51,10 +51,10 @@ public class Device implements Model {
     @NotNull(message = "price is null")
     private BigDecimal price;
 
-    @JsonProperty(DATE_FIELD)
+    @JsonProperty(MANUFACTURE_DATE_FIELD)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
-    @NotNull(message = "date is null")
-    private final LocalDate date;
+    @NotNull(message = "manufactureDate is null")
+    private final LocalDate manufactureDate;
 
     @JsonIgnore
     private long dateLong;
@@ -66,16 +66,16 @@ public class Device implements Model {
     public Device(
             @JsonProperty(value = PRICE_FIELD, required = true) BigDecimal price,
             @JsonProperty(value = TYPE_FIELD, required = true) DeviceType type,
-            @JsonProperty(value = DATE_FIELD, required = true) LocalDate date,
+            @JsonProperty(value = MANUFACTURE_DATE_FIELD, required = true) LocalDate manufactureDate,
             @JsonProperty(value = COLOR_NAME_FIELD, required = true) @JsonDeserialize(using = ColorDeserializer.class) Color color,
-            @JsonProperty(value = ISSUER_FIELD, required = true) String issuer,
-            @JsonProperty(value = MODEL_FIELD, required = true) String model) {
+            @JsonProperty(value = MANUFACTURER_FIELD, required = true) String manufacturer,
+            @JsonProperty(value = MODEL_NAME_FIELD, required = true) String modelName) {
         this.price = price;
         this.type = type;
-        this.date = date;
+        this.manufactureDate = manufactureDate;
         this.color = color;
-        this.issuer = issuer;
-        this.model = model;
+        this.manufacturer = manufacturer;
+        this.modelName = modelName;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class Device implements Model {
     @Override
     public void init() {
         priceDouble = price.doubleValue();
-        dateLong = date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+        dateLong = manufactureDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
     }
 
     public BigDecimal getPrice() {
@@ -116,16 +116,16 @@ public class Device implements Model {
         return color.getRgb();
     }
 
-    public String getIssuer() {
-        return issuer;
+    public String getManufacturer() {
+        return manufacturer;
     }
 
-    public String getModel() {
-        return model;
+    public String getModelName() {
+        return modelName;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getManufactureDate() {
+        return manufactureDate;
     }
 
     public long getDateLong() {
@@ -145,13 +145,13 @@ public class Device implements Model {
                 Double.compare(device.priceDouble, priceDouble) == 0 &&
                 type == device.type &&
                 color.equals(device.color) &&
-                issuer.equals(device.issuer) &&
-                model.equals(device.model);
+                manufacturer.equals(device.manufacturer) &&
+                modelName.equals(device.modelName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, color, issuer, model, priceDouble);
+        return Objects.hash(id, type, color, manufacturer, modelName, priceDouble);
     }
 
     @Override
@@ -160,8 +160,8 @@ public class Device implements Model {
                 "id=" + id +
                 ", type=" + type +
                 ", color=" + color +
-                ", issuer='" + issuer + '\'' +
-                ", model='" + model + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", modelName='" + modelName + '\'' +
                 ", price=" + price +
                 '}';
     }
