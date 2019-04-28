@@ -1,6 +1,7 @@
 package ru.softwerke.rofleksey.app2019.filter;
 
 import java.time.format.DateTimeParseException;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
@@ -48,5 +49,32 @@ class SearchRequestUtils {
         if (!supplier.getAsBoolean()) {
             throw new MalformedSearchRequestException(message, cause);
         }
+    }
+
+    /**
+     * Creates FilterFactory instances for filtering by range using provided comparisonProducerFactory
+     * e.g. price, priceFrom, priceTo
+     * <p>
+     * comparisonProducerFactory must return function, that compares objects in the following way: otherObject (>,=,<) targetObject
+     *
+     * @param filterFactories           map to add generated factories
+     * @param criteriaName              criteria name
+     * @param comparisonProducerFactory function, that accepts string and returns comparison producer (T -> Integer)
+     * @param <T>                       entity type
+     */
+    static <T> void addRange(Map<String, SearchRequest.FilterFactory<T>> filterFactories, String criteriaName,
+                             SearchRequest.ComparisonProducerFactory<T> comparisonProducerFactory) {
+        filterFactories.put(criteriaName, s -> {
+            Function<T, Integer> comparisonProducer = comparisonProducerFactory.apply(s);
+            return it -> comparisonProducer.apply(it) == 0;
+        });
+        filterFactories.put(criteriaName + "From", s -> {
+            Function<T, Integer> comparisonProducer = comparisonProducerFactory.apply(s);
+            return it -> comparisonProducer.apply(it) >= 0;
+        });
+        filterFactories.put(criteriaName + "To", s -> {
+            Function<T, Integer> comparisonProducer = comparisonProducerFactory.apply(s);
+            return it -> comparisonProducer.apply(it) <= 0;
+        });
     }
 }

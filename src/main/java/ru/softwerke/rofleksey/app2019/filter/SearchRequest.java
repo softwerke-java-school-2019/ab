@@ -8,9 +8,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
-
-//TODO: max(pageItems)=1000, min(page)=1
 
 /**
  * Builder of SearchQuery
@@ -18,7 +17,7 @@ import java.util.function.Predicate;
  * @param <T>
  */
 public abstract class SearchRequest<T extends Model> {
-    private static final long DEFAULT_COUNT = 50, MAX_COUNT = 100;
+    private static final long DEFAULT_COUNT = 50, MAX_COUNT = 1000;
     /**
      * Number of elements on the page
      */
@@ -44,7 +43,7 @@ public abstract class SearchRequest<T extends Model> {
         filters = new ArrayList<>();
         comparators = new ArrayList<>();
         count = DEFAULT_COUNT;
-        page = 0;
+        page = 1;
     }
 
     /**
@@ -67,7 +66,7 @@ public abstract class SearchRequest<T extends Model> {
      */
     public void withPage(String pageString) throws MalformedSearchRequestException {
         long pageTemp = SearchRequestUtils.parseString(pageString, Long::valueOf);
-        SearchRequestUtils.assertBool(() -> pageTemp >= 0, "non-negative page expected");
+        SearchRequestUtils.assertBool(() -> pageTemp > 0, "positive page expected");
         page = pageTemp;
     }
 
@@ -80,7 +79,7 @@ public abstract class SearchRequest<T extends Model> {
      */
     public void withFilterOptions(String filterType, String filterValue) throws MalformedSearchRequestException {
         SearchRequestUtils.assertBool(() -> getFilterFactories().containsKey(filterType), "invalid filter type", filterType);
-        filters.add(getFilterFactories().get(filterType).createForInput(filterValue));
+        filters.add(getFilterFactories().get(filterType).apply(filterValue));
     }
 
     /**
@@ -117,12 +116,34 @@ public abstract class SearchRequest<T extends Model> {
      */
     abstract Map<String, Comparator<T>> getComparators();
 
+
     /**
-     * Predicate that may throw MalformedSearchRequestException
+     * Function, that accepts a string and creates predicate for filtering, or fails with MalformedSearchRequestException
      *
-     * @param <T> entity type
+     * @param <T> predicate argument type
      */
-    interface FilterFactory<T> {
-        Predicate<T> createForInput(String input) throws MalformedSearchRequestException;
+    interface FilterFactory<T> extends RequestFunction<String, Predicate<T>> {
+    }
+
+    /**
+     * Function, that accepts a string and creates function, that compares object generated from target string
+     * to object passed as argument (T -> Integer)
+     * If string is malformed, it fails with MalformedSearchRequestException
+     *
+     * @param <T>
+     */
+    interface ComparisonProducerFactory<T> extends RequestFunction<String, Function<T, Integer>> {
+    }
+
+    ;
+
+    /**
+     * Function, that can fail with MalformedSearchRequestException
+     *
+     * @param <T> argument type
+     * @param <R> return type
+     */
+    interface RequestFunction<T, R> {
+        R apply(T t) throws MalformedSearchRequestException;
     }
 }

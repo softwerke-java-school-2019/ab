@@ -35,6 +35,6 @@ public class SearchQuery<T extends Model> {
         for (Comparator<T> comparator : comparators) {
             stream = stream.sorted(comparator);
         }
-        return stream.skip(page * count).limit(count);
+        return stream.skip((page - 1) * count).limit(count);
     }
 }

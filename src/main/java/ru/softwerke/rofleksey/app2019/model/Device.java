@@ -1,6 +1,7 @@
 package ru.softwerke.rofleksey.app2019.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -10,9 +11,10 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Objects;
 
-//TODO: implement date
 public class Device implements Model {
     public static final String DATE_FORMAT = "dd.MM.yyyy";
     private static final String ID_FIELD = "id";
@@ -49,6 +51,14 @@ public class Device implements Model {
     @NotNull(message = "price is null")
     private BigDecimal price;
 
+    @JsonProperty(DATE_FIELD)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
+    @NotNull(message = "date is null")
+    private final LocalDate date;
+
+    @JsonIgnore
+    private long dateLong;
+
     @JsonIgnore
     private double priceDouble;
 
@@ -56,11 +66,13 @@ public class Device implements Model {
     public Device(
             @JsonProperty(value = PRICE_FIELD, required = true) BigDecimal price,
             @JsonProperty(value = TYPE_FIELD, required = true) DeviceType type,
+            @JsonProperty(value = DATE_FIELD, required = true) LocalDate date,
             @JsonProperty(value = COLOR_NAME_FIELD, required = true) @JsonDeserialize(using = ColorDeserializer.class) Color color,
             @JsonProperty(value = ISSUER_FIELD, required = true) String issuer,
             @JsonProperty(value = MODEL_FIELD, required = true) String model) {
         this.price = price;
         this.type = type;
+        this.date = date;
         this.color = color;
         this.issuer = issuer;
         this.model = model;
@@ -79,6 +91,7 @@ public class Device implements Model {
     @Override
     public void init() {
         priceDouble = price.doubleValue();
+        dateLong = date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
     }
 
     public BigDecimal getPrice() {
@@ -109,6 +122,14 @@ public class Device implements Model {
 
     public String getModel() {
         return model;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public long getDateLong() {
+        return dateLong;
     }
 
     public void setColor(Color color) {

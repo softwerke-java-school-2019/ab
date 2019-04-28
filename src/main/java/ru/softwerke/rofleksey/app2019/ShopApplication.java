@@ -16,7 +16,7 @@ import java.util.LinkedHashMap;
 
 
 //TODO: README.md
-//TODO: remove 'message' fields
+//TODO: remove 'message' fields?
 
 @ApplicationPath("/")
 public class ShopApplication extends ResourceConfig {

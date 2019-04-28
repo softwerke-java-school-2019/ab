@@ -5,6 +5,9 @@ import ru.softwerke.rofleksey.app2019.model.Device;
 import ru.softwerke.rofleksey.app2019.model.DeviceType;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -13,9 +16,8 @@ import java.util.Map;
 public class DeviceRequest extends SearchRequest<Device> {
     private static final String ID_CRITERIA = "id";
     private static final String PRICE_CRITERIA = "price";
-    private static final String PRICE_FROM_CRITERIA = "priceFrom";
-    private static final String PRICE_TO_CRITERIA = "priceTo";
     private static final String TYPE_CRITERIA = "type";
+    private static final String DATE_CRITERIA = "date";
     private static final String COLOR_NAME_CRITERIA = "colorName";
     private static final String COLOR_RGB_CRITERIA = "colorRGB";
     private static final String ISSUER_CRITERIA = "issuer";
@@ -24,21 +26,31 @@ public class DeviceRequest extends SearchRequest<Device> {
     private static final Map<String, FilterFactory<Device>> filterFactories;
     private static final Map<String, Comparator<Device>> comparators;
     private static final ObjectMapper mapper = new ObjectMapper();
+    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern(Device.DATE_FORMAT);
 
     static {
         Map<String, FilterFactory<Device>> filterFactoriesTemp = new HashMap<>();
         Map<String, Comparator<Device>> comparatorTemp = new HashMap<>();
-        filterFactoriesTemp.put(PRICE_CRITERIA, p -> {
+//        filterFactoriesTemp.put(PRICE_CRITERIA, p -> {
+////            double price = SearchRequestUtils.parseString(p, Double::valueOf);
+////            return device -> Double.compare(device.getPriceDouble(), price) == 0;
+////        });
+////        filterFactoriesTemp.put(PRICE_FROM_CRITERIA, p -> {
+////            double price = SearchRequestUtils.parseString(p, Double::valueOf);
+////            return device -> Double.compare(device.getPriceDouble(), price) >= 0;
+////        });
+////        filterFactoriesTemp.put(PRICE_TO_CRITERIA, p -> {
+////            double price = SearchRequestUtils.parseString(p, Double::valueOf);
+////            return device -> Double.compare(device.getPriceDouble(), price) <= 0;
+////        });
+        SearchRequestUtils.addRange(filterFactoriesTemp, PRICE_CRITERIA, p -> {
             double price = SearchRequestUtils.parseString(p, Double::valueOf);
-            return device -> Double.compare(device.getPriceDouble(), price) == 0;
+            return device -> Double.compare(device.getPriceDouble(), price);
         });
-        filterFactoriesTemp.put(PRICE_FROM_CRITERIA, p -> {
-            double price = SearchRequestUtils.parseString(p, Double::valueOf);
-            return device -> Double.compare(device.getPriceDouble(), price) >= 0;
-        });
-        filterFactoriesTemp.put(PRICE_TO_CRITERIA, p -> {
-            double price = SearchRequestUtils.parseString(p, Double::valueOf);
-            return device -> Double.compare(device.getPriceDouble(), price) <= 0;
+        SearchRequestUtils.addRange(filterFactoriesTemp, DATE_CRITERIA, date -> {
+            LocalDate tmpDate = SearchRequestUtils.parseString(date, it -> LocalDate.parse(it, format));
+            long tmpLong = tmpDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+            return device -> Long.compare(device.getDateLong(), tmpLong);
         });
         filterFactoriesTemp.put(TYPE_CRITERIA, t -> {
             DeviceType type = SearchRequestUtils.parseString(t, it -> {
