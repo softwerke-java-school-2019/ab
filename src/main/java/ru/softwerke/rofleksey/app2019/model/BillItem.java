@@ -33,31 +33,6 @@ public class BillItem {
         this.price = price;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BillItem that = (BillItem) o;
-        return Objects.equals(deviceId, that.deviceId) &&
-                Objects.equals(quantity, that.quantity) &&
-                Objects.equals(price, that.price);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(deviceId, quantity, price);
-    }
-
-    @Override
-    public String toString() {
-        return "BillItem{" +
-                "deviceId=" + deviceId +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                '}';
-    }
-
     public long getDeviceId() {
         return deviceId;
     }
@@ -73,5 +48,29 @@ public class BillItem {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BillItem billItem = (BillItem) o;
+        return deviceId == billItem.deviceId &&
+                quantity == billItem.quantity &&
+                price.equals(billItem.price);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(deviceId, quantity, price);
+    }
+
+    @Override
+    public String toString() {
+        return "BillItem{" +
+                "deviceId=" + deviceId +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                '}';
     }
 }

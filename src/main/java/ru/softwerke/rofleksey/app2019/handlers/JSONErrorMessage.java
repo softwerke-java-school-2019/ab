@@ -1,4 +1,4 @@
-package ru.softwerke.rofleksey.app2019.controller.rest;
+package ru.softwerke.rofleksey.app2019.handlers;
 
 /**
  * JSON error representation

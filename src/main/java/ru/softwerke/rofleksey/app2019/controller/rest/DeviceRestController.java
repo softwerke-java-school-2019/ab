@@ -2,7 +2,10 @@ package ru.softwerke.rofleksey.app2019.controller.rest;
 
 import ru.softwerke.rofleksey.app2019.filter.DeviceRequest;
 import ru.softwerke.rofleksey.app2019.filter.SearchRequest;
+import ru.softwerke.rofleksey.app2019.handlers.JSONErrorMessage;
+import ru.softwerke.rofleksey.app2019.model.Color;
 import ru.softwerke.rofleksey.app2019.model.Device;
+import ru.softwerke.rofleksey.app2019.service.ColorService;
 import ru.softwerke.rofleksey.app2019.service.DataService;
 
 import javax.inject.Inject;
@@ -15,9 +18,12 @@ import java.util.List;
 
 @Path("/device")
 public class DeviceRestController extends ModelController<Device> {
+    private final ColorService colorService;
+
     @Inject
-    public DeviceRestController(DataService<Device> service) {
+    public DeviceRestController(DataService<Device> service, ColorService colorService) {
         this.service = service;
+        this.colorService = colorService;
     }
 
     @POST
@@ -38,6 +44,16 @@ public class DeviceRestController extends ModelController<Device> {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Device> getDevices(@Context UriInfo ui) {
         return search(ui.getQueryParameters());
+    }
+
+    @Override
+    JSONErrorMessage validate(Device device) {
+        Color color = colorService.getByName(device.getColorName());
+        if (color == null) {
+            return JSONErrorMessage.create("invalid color name", String.format("color '%s' doesn't exist", device.getColorName()));
+        }
+        device.setColor(color);
+        return null;
     }
 
     @Override

@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+//TODO: implement ranges
 public class BillRequest extends SearchRequest<Bill> {
     private static final String ID_CRITERIA = "id";
     private static final String TOTAL_PRICE_CRITERIA = "priceTotal";

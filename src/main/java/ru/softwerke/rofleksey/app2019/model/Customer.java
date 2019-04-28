@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -24,15 +25,15 @@ public class Customer implements Model {
     private long id;
 
     @JsonProperty(FIRST_NAME_FIELD)
-    @NotNull(message = "firstName is null")
+    @NotBlank(message = "firstName is empty or null")
     private final String firstName;
 
     @JsonProperty(MIDDLE_NAME_FIELD)
-    @NotNull(message = "middleName is null")
+    @NotBlank(message = "middleName is empty or null")
     private final String middleName;
 
     @JsonProperty(LAST_NAME_FIELD)
-    @NotNull(message = "lastName is null")
+    @NotBlank(message = "lastName is empty or null")
     private final String lastName;
 
     @JsonProperty(BIRTH_DATE_FIELD)
@@ -57,34 +58,8 @@ public class Customer implements Model {
         this.birthDate = birthDate;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Customer that = (Customer) o;
-        return id == that.id &&
-                Objects.equals(firstName, that.firstName) &&
-                Objects.equals(middleName, that.middleName) &&
-                Objects.equals(lastName, that.lastName) &&
-                Objects.equals(birthDate, that.birthDate);
-    }
-
     public long getId() {
         return id;
-    }
-
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", birthDate=" + birthDate +
-                ", birthDateLong=" + birthDateLong +
-                ", fullName='" + fullName + '\'' +
-                '}';
     }
 
     @Override
@@ -123,7 +98,19 @@ public class Customer implements Model {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return id == customer.id &&
+                birthDateLong == customer.birthDateLong &&
+                firstName.equals(customer.firstName) &&
+                middleName.equals(customer.middleName) &&
+                lastName.equals(customer.lastName);
+    }
+
+    @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, middleName, lastName, birthDate);
+        return Objects.hash(id, firstName, middleName, lastName, birthDateLong);
     }
 }

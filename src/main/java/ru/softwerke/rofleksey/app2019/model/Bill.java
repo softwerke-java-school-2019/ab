@@ -31,7 +31,7 @@ public class Bill implements Model {
     @JsonProperty(ITEMS_LIST_FIELD)
     @Valid
     @NotNull(message = "'items' field is null")
-    private final List<@Valid @NotNull(message = "'items' array contains null objects") BillItem> items;
+    private final List<@Valid @NotNull(message = "'items' array contains null object") BillItem> items;
 
     @JsonProperty(DATE_FIELD)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
@@ -61,33 +61,6 @@ public class Bill implements Model {
         this.date = date;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Bill that = (Bill) o;
-        return id == that.id &&
-                Objects.equals(clientId, that.clientId) &&
-                Objects.equals(items, that.items) &&
-                Objects.equals(date, that.date);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, clientId, items, date);
-    }
-
-    @Override
-    public String toString() {
-        return "Bill{" +
-                "id=" + id +
-                ", clientId=" + clientId +
-                ", items=" + items +
-                ", date=" + date +
-                '}';
-    }
-
     @Override
     public long getId() {
         return id;
@@ -100,10 +73,10 @@ public class Bill implements Model {
 
     @Override
     public void init() {
-        this.totalPrice = this.items.stream().map(BillItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
-        this.totalPriceDouble = this.totalPrice.doubleValue();
-        this.dateLong = date.toInstant(ZoneOffset.UTC).toEpochMilli();
-        this.dateStartOfTheDayLong = LocalDateTime.of(date.toLocalDate(), LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC).toEpochMilli();
+        totalPrice = items.stream().map(BillItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        totalPriceDouble = totalPrice.doubleValue();
+        dateLong = date.toInstant(ZoneOffset.UTC).toEpochMilli();
+        dateStartOfTheDayLong = LocalDateTime.of(date.toLocalDate(), LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC).toEpochMilli();
     }
 
     public boolean containsDevice(long id) {
@@ -136,5 +109,33 @@ public class Bill implements Model {
 
     public double getTotalPriceDouble() {
         return totalPriceDouble;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bill bill = (Bill) o;
+        return id == bill.id &&
+                clientId == bill.clientId &&
+                dateLong == bill.dateLong &&
+                Double.compare(bill.totalPriceDouble, totalPriceDouble) == 0 &&
+                items.equals(bill.items);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, clientId, items, dateLong, totalPriceDouble);
+    }
+
+    @Override
+    public String toString() {
+        return "Bill{" +
+                "id=" + id +
+                ", clientId=" + clientId +
+                ", items=" + items +
+                ", date=" + date +
+                ", totalPrice=" + totalPrice +
+                '}';
     }
 }

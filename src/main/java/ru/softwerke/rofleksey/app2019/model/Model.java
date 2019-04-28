@@ -20,5 +20,7 @@ public interface Model {
     /**
      * precalculates fields after object deserialization and validation
      */
-    void init();
+    default void init() {
+
+    }
 }

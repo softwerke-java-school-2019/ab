@@ -2,6 +2,7 @@ package ru.softwerke.rofleksey.app2019.controller.rest;
 
 import ru.softwerke.rofleksey.app2019.filter.MalformedSearchRequestException;
 import ru.softwerke.rofleksey.app2019.filter.SearchRequest;
+import ru.softwerke.rofleksey.app2019.handlers.JSONErrorMessage;
 import ru.softwerke.rofleksey.app2019.model.Model;
 import ru.softwerke.rofleksey.app2019.service.DataService;
 
@@ -11,7 +12,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 abstract class ModelController<T extends Model> {
-    private static final String COUNT = "count";
+    private static final String PAGE_ITEMS = "pageItems";
     private static final String PAGE = "page";
     private static final String ORDER_TYPE = "orderType";
 
@@ -23,14 +24,33 @@ abstract class ModelController<T extends Model> {
     /**
      * Add entity to storage
      *
-     * @param t Entity
+     * @param entity Entity
      * @return The same entity with id
      * @throws WebApplicationException if entity is null
      */
-    T createEntity(T t) throws WebApplicationException {
-        QueryUtils.checkEmptyRequest(t);
-        t.init();
-        return service.addEntity(t);
+    T createEntity(T entity) throws WebApplicationException {
+        QueryUtils.checkEmptyRequest(entity);
+        JSONErrorMessage errorMessage = validate(entity);
+        if (errorMessage != null) {
+            Response response = Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(errorMessage)
+                    .build();
+            throw new WebApplicationException(response);
+        }
+        entity.init();
+        return service.addEntity(entity);
+    }
+
+
+    /**
+     * Validates target entity
+     *
+     * @param entity entity to validate
+     * @return null if entity is OK, JSONErrorMessage otherwise
+     */
+    JSONErrorMessage validate(T entity) {
+        return null;
     }
 
     /**
@@ -65,21 +85,22 @@ abstract class ModelController<T extends Model> {
         try {
             SearchRequest<T> request = getEmptySearchRequest();
             for (String key : clientParams.keySet()) {
+                String value = clientParams.getFirst(key);
                 switch (key) {
-                    case COUNT: {
-                        request.withCount(clientParams.getFirst(key));
+                    case PAGE_ITEMS: {
+                        request.withPageItemsCount(value);
                         break;
                     }
                     case PAGE: {
-                        request.withPage(clientParams.getFirst(key));
+                        request.withPage(value);
                         break;
                     }
                     case ORDER_TYPE: {
-                        request.withOrderType(clientParams.getFirst(key));
+                        request.withOrderType(value);
                         break;
                     }
                     default: {
-                        request.withFilterOptions(key, clientParams.getFirst(key));
+                        request.withFilterOptions(key, value);
                         break;
                     }
                 }

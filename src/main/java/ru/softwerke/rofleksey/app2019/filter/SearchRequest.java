@@ -30,9 +30,9 @@ public abstract class SearchRequest<T extends Model> {
      */
     private List<Predicate<T>> filters;
     /**
-     * Comparator for target query
+     * List of comparators for target query
      */
-    private Comparator<T> comparator;
+    private List<Comparator<T>> comparators;
 
 
     /**
@@ -40,7 +40,7 @@ public abstract class SearchRequest<T extends Model> {
      */
     SearchRequest() {
         filters = new ArrayList<>();
-        comparator = Comparator.comparing(Model::getId);
+        comparators = new ArrayList<>();
         count = DEFAULT_COUNT;
         page = 0;
     }
@@ -51,7 +51,7 @@ public abstract class SearchRequest<T extends Model> {
      * @param countString string representation of count
      * @throws MalformedSearchRequestException if string doesn't describe valid count
      */
-    public void withCount(String countString) throws MalformedSearchRequestException {
+    public void withPageItemsCount(String countString) throws MalformedSearchRequestException {
         long countTemp = SearchRequestUtils.parseString(countString, Long::valueOf);
         SearchRequestUtils.assertBool(() -> countTemp > 0, "positive count expected");
         count = Math.min(MAX_COUNT, countTemp);
@@ -65,7 +65,7 @@ public abstract class SearchRequest<T extends Model> {
      */
     public void withPage(String pageString) throws MalformedSearchRequestException {
         long pageTemp = SearchRequestUtils.parseString(pageString, Long::valueOf);
-        SearchRequestUtils.assertBool(() -> pageTemp >= 0, "non-negative offset expected");
+        SearchRequestUtils.assertBool(() -> pageTemp >= 0, "non-negative page expected");
         page = pageTemp;
     }
 
@@ -91,17 +91,18 @@ public abstract class SearchRequest<T extends Model> {
         boolean reverse = StringUtils.startsWith(orderType, "-");
         String actualOrderType = reverse ? StringUtils.substring(orderType, 1) : orderType;
         SearchRequestUtils.assertBool(() -> getComparators().containsKey(actualOrderType), "invalid order type", orderType);
-        comparator = getComparators().get(actualOrderType);
+        Comparator<T> comparator = getComparators().get(actualOrderType);
         if (reverse) {
             comparator = comparator.reversed();
         }
+        comparators.add(comparator);
     }
 
     /**
      * @return search query
      */
     public SearchQuery<T> buildQuery() {
-        return new SearchQuery<>(filters, comparator, count, page);
+        return new SearchQuery<>(filters, comparators, count, page);
     }
 
     /**

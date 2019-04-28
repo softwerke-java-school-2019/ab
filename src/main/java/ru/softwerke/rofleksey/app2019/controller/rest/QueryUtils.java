@@ -1,6 +1,7 @@
 package ru.softwerke.rofleksey.app2019.controller.rest;
 
 import org.apache.commons.lang3.StringUtils;
+import ru.softwerke.rofleksey.app2019.handlers.JSONErrorMessage;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;

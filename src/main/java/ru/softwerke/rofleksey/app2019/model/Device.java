@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-
+//TODO: implement date
 public class Device implements Model {
     public static final String DATE_FORMAT = "dd.MM.yyyy";
     private static final String ID_FIELD = "id";
@@ -29,20 +30,16 @@ public class Device implements Model {
     private final DeviceType type;
 
     @JsonProperty(COLOR_NAME_FIELD)
-    @NotNull(message = "colorName is null")
+    @NotBlank(message = "colorName is empty or null")
     private final String colorName;
-
-    @JsonProperty(COLOR_RGB_FIELD)
-    @NotNull
-    private final int colorRGB;
-
     @JsonProperty(ISSUER_FIELD)
-    @NotNull(message = "issuer is null")
+    @NotBlank(message = "issuer is empty or null")
     private final String issuer;
-
     @JsonProperty(MODEL_FIELD)
-    @NotNull(message = "model is null")
+    @NotBlank(message = "model is empty or null")
     private final String model;
+    @JsonProperty(COLOR_RGB_FIELD)
+    private Color color;
 
     @JsonProperty(PRICE_FIELD)
     @NotNull(message = "price is null")
@@ -55,48 +52,14 @@ public class Device implements Model {
     public Device(
             @JsonProperty(value = PRICE_FIELD, required = true) BigDecimal price,
             @JsonProperty(value = TYPE_FIELD, required = true) DeviceType type,
-            @JsonProperty(value = COLOR_NAME_FIELD, required = true) String colorName,
-            @JsonProperty(value = COLOR_RGB_FIELD, required = true) int colorRGB,
+            @JsonProperty(value = COLOR_NAME_FIELD) String colorName,
             @JsonProperty(value = ISSUER_FIELD, required = true) String issuer,
             @JsonProperty(value = MODEL_FIELD, required = true) String model) {
         this.price = price;
         this.type = type;
         this.colorName = colorName;
-        this.colorRGB = colorRGB;
         this.issuer = issuer;
         this.model = model;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Device that = (Device) o;
-        return id == that.id &&
-                Objects.equals(price, that.price) &&
-                Objects.equals(colorName, that.colorName) &&
-                Objects.equals(colorRGB, that.colorRGB) &&
-                Objects.equals(issuer, that.issuer) &&
-                Objects.equals(model, that.model);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, price, type, colorName, colorRGB, issuer, model);
-    }
-
-    @Override
-    public String toString() {
-        return "Device{" +
-                "id=" + id +
-                ", type='" + type + '\'' +
-                ", colorName='" + colorName + '\'' +
-                ", colorRGB=" + colorRGB +
-                ", issuer='" + issuer + '\'' +
-                ", model='" + model + '\'' +
-                ", price=" + price +
-                '}';
     }
 
     @Override
@@ -123,7 +86,7 @@ public class Device implements Model {
     }
 
     public String getColorName() {
-        return colorName;
+        return color.getName();
     }
 
     public DeviceType getType() {
@@ -131,7 +94,7 @@ public class Device implements Model {
     }
 
     public int getColorRGB() {
-        return colorRGB;
+        return color.getRgb();
     }
 
     public String getIssuer() {
@@ -140,5 +103,39 @@ public class Device implements Model {
 
     public String getModel() {
         return model;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Device device = (Device) o;
+        return id == device.id &&
+                Double.compare(device.priceDouble, priceDouble) == 0 &&
+                type == device.type &&
+                color.equals(device.color) &&
+                issuer.equals(device.issuer) &&
+                model.equals(device.model);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type, color, issuer, model, priceDouble);
+    }
+
+    @Override
+    public String toString() {
+        return "Device{" +
+                "id=" + id +
+                ", type=" + type +
+                ", color=" + color +
+                ", issuer='" + issuer + '\'' +
+                ", model='" + model + '\'' +
+                ", price=" + price +
+                '}';
     }
 }
