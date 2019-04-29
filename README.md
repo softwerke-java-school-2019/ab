@@ -1,9 +1,10 @@
 # ab
 
-* [usage](#usage)
+  * [usage](#usage)
     + [GET /api/<entity>  options](#get--api--entity---options)
-        - [custom colors](#custom-colors)
-        - [error handling](#error-handling)
+      - [examples](#examples)
+      - [custom colors](#custom-colors)
+      - [error handling](#error-handling)
 
 
 ## usage
@@ -61,12 +62,30 @@ supported entities:
 * *api doesn't accept empty or null fields*
 
 ### GET /api/<entity>  options
-* orderType : String - field to order by
-* pageItems : long - number of element on a single page
-* page : long - page number
+* `orderType` : String - field to order by
+* `pageItems` : long - number of element on a single page
+* `page` : long - page number
 * anything else is considered a filter option
 
-*some fields support range: birthdate, price, manufactureDate, totalPrice, purchaseDateTime, e.g. priceFrom, priceTo e.t.c.*
+* *some fields support range: `birthdate`, `price`, `manufactureDate`, `totalPrice`, `purchaseDateTime`, e.g. `priceFrom`, `priceTo` e.t.c.*
+* *`-` can be used before value of orderType to reverse the result, e.g. `orderType=-id`*
+
+#### examples
+
+```
+POST /api/device
+body:
+{
+ 	"price": "100",
+  	"type": "Smartphone",
+  	"manufactureDate": "28.04.2019",
+  	"colorName": "red",
+  	"manufacturer": "Lenovo",
+  	"modelName": "ideapod"
+}
+
+GET /api/device?priceFrom=90&priceTo=110&orderType=manufacturer
+```
 
 #### custom colors
 ```
