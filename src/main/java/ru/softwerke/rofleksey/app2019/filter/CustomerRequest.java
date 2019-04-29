@@ -1,9 +1,9 @@
 package ru.softwerke.rofleksey.app2019.filter;
 
 import ru.softwerke.rofleksey.app2019.model.Customer;
+import ru.softwerke.rofleksey.app2019.model.ModelUtils;
 
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,7 +32,7 @@ public class CustomerRequest extends SearchRequest<Customer> {
         filterFactoriesTemp.put(FULL_NAME_CRITERIA, name -> c -> c.getFullName().equals(name));
         filterFactoriesTemp.put(BIRTH_DATE_CRITERIA, date -> {
             LocalDate tmpDate = SearchRequestUtils.parseString(date, it -> LocalDate.parse(it, format));
-            long tmpLong = tmpDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+            long tmpLong = ModelUtils.localDateToLong(tmpDate);
             return customer -> customer.getBirthDateLong() == tmpLong;
         });
         comparatorTemp.put(ID_CRITERIA, Comparator.comparing(Customer::getId));

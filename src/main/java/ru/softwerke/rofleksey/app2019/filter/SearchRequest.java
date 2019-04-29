@@ -91,7 +91,7 @@ public abstract class SearchRequest<T extends Model> {
     public void withOrderType(String orderType) throws MalformedSearchRequestException {
         boolean reverse = StringUtils.startsWith(orderType, "-");
         String actualOrderType = reverse ? StringUtils.substring(orderType, 1) : orderType;
-        SearchRequestUtils.assertBool(() -> getComparators().containsKey(actualOrderType), "invalid order type", orderType);
+        SearchRequestUtils.assertBool(() -> getComparators().containsKey(actualOrderType), "invalid order type", actualOrderType);
         Comparator<T> comparator = getComparators().get(actualOrderType);
         if (reverse) {
             comparator = comparator.reversed();
@@ -135,7 +135,6 @@ public abstract class SearchRequest<T extends Model> {
     interface ComparisonProducerFactory<T> extends RequestFunction<String, Function<T, Integer>> {
     }
 
-    ;
 
     /**
      * Function, that can fail with MalformedSearchRequestException

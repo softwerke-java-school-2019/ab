@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.Objects;
 
 
@@ -70,7 +69,7 @@ public class Customer implements Model {
     @Override
     public void init() {
         fullName = firstName + " " + middleName + " " + lastName;
-        birthDateLong = birthDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+        birthDateLong = ModelUtils.localDateToLong(birthDate);
     }
 
     public String getFirstName() {

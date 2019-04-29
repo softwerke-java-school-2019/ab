@@ -9,8 +9,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,9 +41,6 @@ public class Bill implements Model {
     private long dateLong;
 
     @JsonIgnore
-    private long dateStartOfTheDayLong;
-
-    @JsonIgnore
     private BigDecimal totalPrice;
 
     @JsonIgnore
@@ -76,8 +71,7 @@ public class Bill implements Model {
     public void init() {
         totalPrice = items.stream().map(BillItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
         totalPriceDouble = totalPrice.doubleValue();
-        dateLong = purchaseDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
-        dateStartOfTheDayLong = LocalDateTime.of(purchaseDateTime.toLocalDate(), LocalTime.MIDNIGHT).toInstant(ZoneOffset.UTC).toEpochMilli();
+        dateLong = ModelUtils.localDateTimeToLong(purchaseDateTime);
     }
 
     public boolean containsDevice(long id) {
@@ -103,10 +97,6 @@ public class Bill implements Model {
 
     public long getDateLong() {
         return dateLong;
-    }
-
-    public long getDateStartOfTheDayLong() {
-        return dateStartOfTheDayLong;
     }
 
     public double getTotalPriceDouble() {

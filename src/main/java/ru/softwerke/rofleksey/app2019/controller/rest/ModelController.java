@@ -1,5 +1,8 @@
 package ru.softwerke.rofleksey.app2019.controller.rest;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.softwerke.rofleksey.app2019.filter.MalformedSearchRequestException;
 import ru.softwerke.rofleksey.app2019.filter.SearchRequest;
 import ru.softwerke.rofleksey.app2019.handlers.JSONErrorMessage;
@@ -12,6 +15,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 abstract class ModelController<T extends Model> {
+    private static final Logger logger = LoggerFactory.getLogger(ModelController.class);
     private static final String PAGE_ITEMS = "pageItems";
     private static final String PAGE = "page";
     private static final String ORDER_TYPE = "orderType";
@@ -67,6 +71,13 @@ abstract class ModelController<T extends Model> {
             SearchRequest<T> request = getEmptySearchRequest();
             for (String key : clientParams.keySet()) {
                 String value = clientParams.getFirst(key);
+                if (StringUtils.isBlank(value)) {
+                    Response response = Response
+                            .status(Response.Status.BAD_REQUEST)
+                            .entity(JSONErrorMessage.create("empty field", String.format("field '%s' is empty", key)))
+                            .build();
+                    throw new WebApplicationException(response);
+                }
                 switch (key) {
                     case PAGE_ITEMS: {
                         request.withPageItemsCount(value);

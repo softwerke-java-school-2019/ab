@@ -12,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.Objects;
 
 public class Device implements Model {
@@ -22,7 +21,7 @@ public class Device implements Model {
     private static final String MANUFACTURE_DATE_FIELD = "manufactureDate";
     private static final String TYPE_FIELD = "type";
     private static final String COLOR_NAME_FIELD = "colorName";
-    private static final String COLOR_RGB_FIELD = "colorRGB";
+    private static final String COLOR_RGB_FIELD = "colorRgb";
     private static final String MANUFACTURER_FIELD = "manufacturer";
     private static final String MODEL_NAME_FIELD = "modelName";
 
@@ -91,7 +90,7 @@ public class Device implements Model {
     @Override
     public void init() {
         priceDouble = price.doubleValue();
-        dateLong = manufactureDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+        dateLong = ModelUtils.localDateToLong(manufactureDate);
     }
 
     public BigDecimal getPrice() {
@@ -159,10 +158,12 @@ public class Device implements Model {
         return "Device{" +
                 "id=" + id +
                 ", type=" + type +
-                ", color=" + color +
                 ", manufacturer='" + manufacturer + '\'' +
                 ", modelName='" + modelName + '\'' +
+                ", color=" + color +
                 ", price=" + price +
+                ", manufactureDate=" + manufactureDate +
+                ", dateLong=" + dateLong +
                 '}';
     }
 }

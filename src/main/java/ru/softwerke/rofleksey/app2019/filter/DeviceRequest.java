@@ -3,10 +3,10 @@ package ru.softwerke.rofleksey.app2019.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.softwerke.rofleksey.app2019.model.Device;
 import ru.softwerke.rofleksey.app2019.model.DeviceType;
+import ru.softwerke.rofleksey.app2019.model.ModelUtils;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,7 +19,7 @@ public class DeviceRequest extends SearchRequest<Device> {
     private static final String TYPE_CRITERIA = "type";
     private static final String MANUFACTURE_DATE_CRITERIA = "manufactureDate";
     private static final String COLOR_NAME_CRITERIA = "colorName";
-    private static final String COLOR_RGB_CRITERIA = "colorRGB";
+    private static final String COLOR_RGB_CRITERIA = "colorRgb";
     private static final String MANUFACTURER_CRITERIA = "manufacturer";
     private static final String MODEL_NAME_CRITERIA = "modelName";
 
@@ -49,7 +49,7 @@ public class DeviceRequest extends SearchRequest<Device> {
         });
         SearchRequestUtils.addRange(filterFactoriesTemp, MANUFACTURE_DATE_CRITERIA, date -> {
             LocalDate tmpDate = SearchRequestUtils.parseString(date, it -> LocalDate.parse(it, format));
-            long tmpLong = tmpDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+            long tmpLong = ModelUtils.localDateToLong(tmpDate);
             return device -> Long.compare(device.getDateLong(), tmpLong);
         });
         filterFactoriesTemp.put(TYPE_CRITERIA, t -> {
@@ -75,6 +75,7 @@ public class DeviceRequest extends SearchRequest<Device> {
         comparatorTemp.put(COLOR_NAME_CRITERIA, Comparator.comparing(Device::getColorName));
         comparatorTemp.put(COLOR_RGB_CRITERIA, Comparator.comparing(Device::getColorRGB));
         comparatorTemp.put(MANUFACTURER_CRITERIA, Comparator.comparing(Device::getManufacturer));
+        comparatorTemp.put(MANUFACTURE_DATE_CRITERIA, Comparator.comparing(Device::getDateLong));
         comparatorTemp.put(MODEL_NAME_CRITERIA, Comparator.comparing(Device::getModelName));
 
         filterFactories = Collections.unmodifiableMap(filterFactoriesTemp);
