@@ -1,11 +1,11 @@
 # ab
 
-  * [usage](#usage)
-    + [GET /api/<entity>  options](#get--api--entity---options)
-      - [examples](#examples)
-      - [custom colors](#custom-colors)
-      - [error handling](#error-handling)
-
+* [usage](#usage)
+    + [entities](#entities)
+    + [GET /api/<entity> options](#get--api--entity--options)
+    + [examples](#examples)
+    + [custom colors](#custom-colors)
+    + [error handling](#error-handling)
 
 ## usage
 
@@ -14,7 +14,7 @@ GET /api/<entity>
 GET /api/<entity>/id
 POST /api/<entity> (Body: JSON)
 ```
-supported entities:
+### entities
 
 `customer: `
 
@@ -61,7 +61,7 @@ supported entities:
 * *you should only specify `colorName` instead of `colorRgb` for device in POST request, otherwise it will be considered as an invalid field*
 * *api doesn't accept empty or null fields*
 
-### GET /api/<entity>  options
+### GET /api/<entity> options
 * `orderType` : String - field to order by
 * `pageItems` : long - number of element on a single page
 * `page` : long - page number
@@ -70,7 +70,7 @@ supported entities:
 * *some fields support range: `birthdate`, `price`, `manufactureDate`, `totalPrice`, `purchaseDateTime`, e.g. `priceFrom`, `priceTo` e.t.c.*
 * *`-` can be used before value of orderType to reverse the result, e.g. `orderType=-id`*
 
-#### examples
+### examples
 
 ```
 POST /api/device
@@ -87,7 +87,7 @@ body:
 GET /api/device?priceFrom=90&priceTo=110&orderType=manufacturer
 ```
 
-#### custom colors
+### custom colors
 ```
 GET /api/color (no arguments)
 POST /api/color (Body: JSON)
@@ -103,7 +103,7 @@ POST /api/color (Body: JSON)
 
 
 
-#### error handling
+### error handling
 
 In case of error this JSON will be returned:
 
