@@ -8,7 +8,6 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-//TODO: fix access public -> package-private
 public class BillItem {
     private static final String DEVICE_ID_FIELD = "deviceId";
     private static final String QUANTITY_FIELD = "quantity";

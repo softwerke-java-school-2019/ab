@@ -21,7 +21,7 @@ public class JsonParseExceptionHandler implements ExceptionMapper<JsonParseExcep
 
     @Override
     public Response toResponse(JsonParseException exception) {
-        //exception.clearLocation();
+        exception.clearLocation();
         JSONErrorMessage message = JSONErrorMessage.create("parse error", exception.getOriginalMessage());
         return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
     }

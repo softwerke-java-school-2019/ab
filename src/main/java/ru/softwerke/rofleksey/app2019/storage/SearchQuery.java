@@ -8,7 +8,10 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * @param <T> Search query
+ * Holder of search arguments, such as filters, comparators, page number and page items count
+ * Can be directly applied to stream of entities
+ *
+ * @param <T> entity type
  */
 public class SearchQuery<T extends Model> {
     private final List<Predicate<T>> filters;

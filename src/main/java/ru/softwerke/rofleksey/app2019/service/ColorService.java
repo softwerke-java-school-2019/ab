@@ -5,6 +5,10 @@ import ru.softwerke.rofleksey.app2019.model.Color;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * StorageService for Color
+ * Additionally stores map of names to colors for fast retrieval
+ */
 public class ColorService extends StorageService<Color> {
     private static final ColorService INSTANCE = new ColorService();
 

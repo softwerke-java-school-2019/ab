@@ -17,7 +17,6 @@ public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper
     public ObjectMapperContextResolver() {
         MAPPER = new ObjectMapper();
         MAPPER.registerModule(new JavaTimeModule());
-        //MAPPER.registerModule(new SimpleModule().addDeserializer(Color.class, ColorDeserializer.class));
         MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 

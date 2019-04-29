@@ -31,18 +31,6 @@ public class DeviceRequest extends SearchRequest<Device> {
     static {
         Map<String, FilterFactory<Device>> filterFactoriesTemp = new HashMap<>();
         Map<String, Comparator<Device>> comparatorTemp = new HashMap<>();
-//        filterFactoriesTemp.put(PRICE_CRITERIA, p -> {
-////            double price = SearchRequestUtils.parseString(p, Double::valueOf);
-////            return device -> Double.compare(device.getPriceDouble(), price) == 0;
-////        });
-////        filterFactoriesTemp.put(PRICE_FROM_CRITERIA, p -> {
-////            double price = SearchRequestUtils.parseString(p, Double::valueOf);
-////            return device -> Double.compare(device.getPriceDouble(), price) >= 0;
-////        });
-////        filterFactoriesTemp.put(PRICE_TO_CRITERIA, p -> {
-////            double price = SearchRequestUtils.parseString(p, Double::valueOf);
-////            return device -> Double.compare(device.getPriceDouble(), price) <= 0;
-////        });
         SearchRequestUtils.addRange(filterFactoriesTemp, PRICE_CRITERIA, p -> {
             double price = SearchRequestUtils.parseString(p, Double::valueOf);
             return device -> Double.compare(device.getPriceDouble(), price);

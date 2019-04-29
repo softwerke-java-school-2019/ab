@@ -21,7 +21,7 @@ public class JsonMappingExceptionHandler implements ExceptionMapper<JsonMappingE
 
     @Override
     public Response toResponse(JsonMappingException exception) {
-        //exception.clearLocation();
+        exception.clearLocation();
         JSONErrorMessage message = JSONErrorMessage.create("malformed json", exception.getOriginalMessage());
         return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
     }

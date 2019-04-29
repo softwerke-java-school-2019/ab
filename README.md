@@ -1,6 +1,10 @@
 # ab
 
-HW1?
+* [usage](#usage)
+    + [GET /api/<entity>  options](#get--api--entity---options)
+        - [custom colors](#custom-colors)
+        - [error handling](#error-handling)
+
 
 ## usage
 
@@ -9,47 +13,82 @@ GET /api/<entity>
 GET /api/<entity>/id
 POST /api/<entity> (Body: JSON)
 ```
-list of entities and their JSON-representation:
-* `customer {first_name: String, middle_name: String, last_name: String, birth_date: long}`
-* `device {price: String, type: String, color_name: String, color_rgb: int, manufacturer: String, modelName: String}`
-* `bill {client_id: long, items_list: [BillItem], manufactureDate: long, time: long}`
+supported entities:
 
-BillItem has JSON-form `{device_id: long, quantity: int, price: String}` and is not considered an entity
+`customer: `
+
+| Field Name | Type                            | Description                       |   Example  |
+|:----------:|:-------------------------------:|-----------------------------------|:----------:|
+|  firstName | string                          |                        |    Петр    |
+| middleName | string                          |                        |  Петрович  |
+|  lastName  | string                          |                        |   Петров   |
+|  birthdate | string, date format: dd.MM.YYYY | birth date             | 25.04.2019 |
+|     id     | Integer number                  | unique id generated upon creation |    9000    |
+
+`device: `
+
+|    Field Name   |               Type              |             Description             |                Example                |
+|:---------------:|:-------------------------------:|:-----------------------------------:|:-------------------------------------:|
+|    deviceType   |              string             | device type (from a predefined set) | Smartphone Laptop Smart Watch Tablet  |
+|    modelName    |              string             |                                     |              Galaxy S10+              |
+| manufactureDate | string, date format: dd.MM.YYYY | date of issue                       |               25.04.2019              |
+|   manufacturer  |              string             |                                     |                Samsung                |
+|    colorName    |              string             |                                     |                 черный                |
+|     colorRGB    |          Integer number         | integer representation (rgb)        |                   0                   |
+|      price      |          Integer number         | integer price                       |                12499000               |
+|        id       |          Integer number         | unique id generated upon creation   |                1126970                |
+
+`bill: `
+
+|    Field Name    |                     Type                     |             Description            |       Example       |
+|:----------------:|:--------------------------------------------:|:----------------------------------:|:-------------------:|
+|    customerId    |                Integer number                |                                    |        9001         |
+|    totalPrice    |                Integer number                | integer price represented in penny |       31415926      |
+| purchaseDateTime | String, date/time format:dd.MM.YYYY HH:mm:ss | purchase time and date             | 01.01.2019 07:50:22 |
+|       items      |               List of BillItem               |                                    |                     |
+
+
+`BillItem: ` (as part of `bill`)
+
+| Field Name |      Type      |           Description           | Example |
+|:----------:|:--------------:|:-------------------------------:|:-------:|
+|  deviceId  | Integer number |                                 | 1004709 |
+|  quantity  | Integer number | number of devices               |   100   |
+|    price   | Integer number | price at the moment of purchase |   490   |
+
+* *you should not specify `id` in POST request, otherwise it will be considered as an invalid field*
+* *you should only specify `colorName` instead of `colorRgb` for device in POST request, otherwise it will be considered as an invalid field*
+* *api doesn't accept empty or null fields*
 
 ### GET /api/<entity>  options
-* orderBy : String - not required
-  * id
-  * price_total (Bill)
-  * cliend_id (Bill)
-  * manufactureDate (Bill, Device)
-  * first_name (Customer)
-  * middle_name (Customer)
-  * last_name (Customer)
-  * birth_date (Customer)
-  * price (Device)
-  * type (Device)
-  * color_name (Device)
-  * color_rgb (Device)
-  * manufacturer (Device)
-  * modelName (Device)
-* filterBy : String - not required
-  * anything from orderBy (except for id)
-  * price_total_equal (Bill)
-  * price_total_less (Bill)
-  * price_total_more (Bill)
-* filterValue : String - required if filterBy is set
-* offset : long - not required
-* count : long - not required
+* orderType : String - field to order by
+* pageItems : long - number of element on a single page
+* page : long - page number
+* anything else is considered a filter option
 
-### request examples
+*some fields support range: birthdate, price, manufactureDate, totalPrice, purchaseDateTime, e.g. priceFrom, priceTo e.t.c.*
 
+#### custom colors
 ```
-GET /api/bill?orderBy=manufactureDate
-GET /api/customer?filterBy=last_name&filterValue=Privet&orderBy=middle_name
-POST /api/bill {"client_id":2,"items_list":[{"device_id":1,"quantity":22,"price":34}],"manufactureDate":2,"time":69}
+GET /api/color (no arguments)
+POST /api/color (Body: JSON)
 ```
-### response examples
-```
-[{"price":30000,"type":"computer","color_name":"green","color_rgb":65280,"manufacturer":"Sony","modelName":"B","id":0},{"price":9000,"type":"phone","color_name":"red","color_rgb":16711680,"manufacturer":"Sony","modelName":"A","id":1},{"price":12000,"type":"phone","color_name":"green","color_rgb":65280,"manufacturer":"Samsung","modelName":"C","id":2}]
-[{"first_name":"Borisov","middle_name":"Aleksey","last_name":"Mikhailovich","birth_date":100,"id":0},{"first_name":"Kurilenko","middle_name":"Vlad","last_name":"Privet","birth_date":90,"id":1},{"first_name":"Solyanov","middle_name":"Ivan","last_name":"Privet","birth_date":200,"id":2}]
-```
+
+`color: `
+
+| Field Name |      Type      |            Description            | Example |
+|:----------:|:--------------:|:---------------------------------:|:-------:|
+|     id     | Integer number | unique id generated upon creation |    0    |
+|    name    |     String     | color name                        |   red   |
+|     rgb    | Integer number | integer representation (rgb)      |    0    |
+
+
+
+#### error handling
+
+In case of error this JSON will be returned:
+
+|   Field Name  |  Type  |  Description  |     Example     |
+|:-------------:|:------:|:-------------:|:---------------:|
+|   error.type  | String | error type    |  invalid format  |
+| error.message | String | error details | string 'a' has invalid format |

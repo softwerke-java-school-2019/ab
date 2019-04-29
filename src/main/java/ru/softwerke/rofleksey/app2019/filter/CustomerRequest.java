@@ -30,10 +30,10 @@ public class CustomerRequest extends SearchRequest<Customer> {
         filterFactoriesTemp.put(MIDDLE_NAME_CRITERIA, name -> c -> c.getMiddleName().equals(name));
         filterFactoriesTemp.put(LAST_NAME_CRITERIA, name -> c -> c.getLastName().equals(name));
         filterFactoriesTemp.put(FULL_NAME_CRITERIA, name -> c -> c.getFullName().equals(name));
-        filterFactoriesTemp.put(BIRTH_DATE_CRITERIA, date -> {
+        SearchRequestUtils.addRange(filterFactoriesTemp, BIRTH_DATE_CRITERIA, date -> {
             LocalDate tmpDate = SearchRequestUtils.parseString(date, it -> LocalDate.parse(it, format));
             long tmpLong = ModelUtils.localDateToLong(tmpDate);
-            return customer -> customer.getBirthDateLong() == tmpLong;
+            return customer -> Long.compare(customer.getBirthDateLong(), tmpLong);
         });
         comparatorTemp.put(ID_CRITERIA, Comparator.comparing(Customer::getId));
         comparatorTemp.put(FIRST_NAME_CRITERIA, Comparator.comparing(Customer::getFirstName));

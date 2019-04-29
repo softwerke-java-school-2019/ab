@@ -22,7 +22,7 @@ public class UnrecognizedPropertyExceptionHandler implements ExceptionMapper<Unr
 
     @Override
     public Response toResponse(UnrecognizedPropertyException exception) {
-        //exception.clearLocation();
+        exception.clearLocation();
         JSONErrorMessage message = JSONErrorMessage.create("unrecognized property",
                 String.format("Unrecognized property '%s'", exception.getPropertyName()));
         return Response.status(Response.Status.BAD_REQUEST).entity(message).build();

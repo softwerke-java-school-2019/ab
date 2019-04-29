@@ -9,6 +9,9 @@ import ru.softwerke.rofleksey.app2019.service.ColorService;
 
 import java.io.IOException;
 
+/**
+ * Uses ColorService to determine if target color exists
+ */
 public class ColorDeserializer extends JsonDeserializer<Color> {
     private final ColorService colorService = ColorService.getInstance();
 
