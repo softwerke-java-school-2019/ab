@@ -19,7 +19,7 @@ public class Device implements Model {
     private static final String ID_FIELD = "id";
     private static final String PRICE_FIELD = "price";
     private static final String MANUFACTURE_DATE_FIELD = "manufactureDate";
-    private static final String TYPE_FIELD = "type";
+    private static final String DEVICE_TYPE_FIELD = "deviceType";
     private static final String COLOR_NAME_FIELD = "colorName";
     private static final String COLOR_RGB_FIELD = "colorRgb";
     private static final String MANUFACTURER_FIELD = "manufacturer";
@@ -29,8 +29,8 @@ public class Device implements Model {
     @JsonProperty(ID_FIELD)
     private long id;
 
-    @JsonProperty(TYPE_FIELD)
-    @NotNull(message = "type is null")
+    @JsonProperty(DEVICE_TYPE_FIELD)
+    @NotNull(message = "deviceType is null")
     private final DeviceType type;
 
     @JsonProperty(MANUFACTURER_FIELD)
@@ -64,7 +64,7 @@ public class Device implements Model {
     @JsonCreator
     public Device(
             @JsonProperty(value = PRICE_FIELD, required = true) BigDecimal price,
-            @JsonProperty(value = TYPE_FIELD, required = true) DeviceType type,
+            @JsonProperty(value = DEVICE_TYPE_FIELD, required = true) DeviceType type,
             @JsonProperty(value = MANUFACTURE_DATE_FIELD, required = true) LocalDate manufactureDate,
             @JsonProperty(value = COLOR_NAME_FIELD, required = true) @JsonDeserialize(using = ColorDeserializer.class) Color color,
             @JsonProperty(value = MANUFACTURER_FIELD, required = true) String manufacturer,

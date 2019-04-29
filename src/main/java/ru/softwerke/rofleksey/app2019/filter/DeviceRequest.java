@@ -16,7 +16,7 @@ import java.util.Map;
 public class DeviceRequest extends SearchRequest<Device> {
     private static final String ID_CRITERIA = "id";
     private static final String PRICE_CRITERIA = "price";
-    private static final String TYPE_CRITERIA = "type";
+    private static final String DEVICE_TYPE_CRITERIA = "deviceType";
     private static final String MANUFACTURE_DATE_CRITERIA = "manufactureDate";
     private static final String COLOR_NAME_CRITERIA = "colorName";
     private static final String COLOR_RGB_CRITERIA = "colorRgb";
@@ -40,7 +40,7 @@ public class DeviceRequest extends SearchRequest<Device> {
             long tmpLong = ModelUtils.localDateToLong(tmpDate);
             return device -> Long.compare(device.getDateLong(), tmpLong);
         });
-        filterFactoriesTemp.put(TYPE_CRITERIA, t -> {
+        filterFactoriesTemp.put(DEVICE_TYPE_CRITERIA, t -> {
             DeviceType type = SearchRequestUtils.parseString(t, it -> {
                 try {
                     return mapper.readValue("\"" + it + "\"", DeviceType.class);
@@ -59,7 +59,7 @@ public class DeviceRequest extends SearchRequest<Device> {
         filterFactoriesTemp.put(MODEL_NAME_CRITERIA, m -> d -> d.getModelName().equals(m));
         comparatorTemp.put(ID_CRITERIA, Comparator.comparing(Device::getId));
         comparatorTemp.put(PRICE_CRITERIA, Comparator.comparing(Device::getPrice));
-        comparatorTemp.put(TYPE_CRITERIA, Comparator.comparing(Device::getType));
+        comparatorTemp.put(DEVICE_TYPE_CRITERIA, Comparator.comparing(Device::getType));
         comparatorTemp.put(COLOR_NAME_CRITERIA, Comparator.comparing(Device::getColorName));
         comparatorTemp.put(COLOR_RGB_CRITERIA, Comparator.comparing(Device::getColorRGB));
         comparatorTemp.put(MANUFACTURER_CRITERIA, Comparator.comparing(Device::getManufacturer));

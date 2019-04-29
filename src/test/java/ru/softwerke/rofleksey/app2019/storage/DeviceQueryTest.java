@@ -103,14 +103,14 @@ class DeviceQueryTest extends DataStorageGenericTest<Device> {
     @Test
     void byType1() {
         sampleTest(request -> {
-            request.withFilterOptions("type", "Smartphone");
+            request.withFilterOptions("deviceType", "Smartphone");
         }, device -> device.getType() == DeviceType.SMARTPHONE);
     }
 
     @Test
     void byType2() {
         sampleTest(request -> {
-            request.withOrderType("type");
+            request.withOrderType("deviceType");
         }, Comparator.comparing(Device::getType));
     }
 
@@ -124,7 +124,7 @@ class DeviceQueryTest extends DataStorageGenericTest<Device> {
     @Test
     void invalidType() {
         errorTest(request -> {
-            request.withFilterOptions("type", "eren");
+            request.withFilterOptions("deviceType", "eren");
         }, "invalid enum type: 'eren'");
     }
 

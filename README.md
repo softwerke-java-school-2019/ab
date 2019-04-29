@@ -63,7 +63,7 @@ POST /api/<entity> (Body: JSON)
 
 ### GET /api/<entity> options
 * `orderType` : String - field to order by
-* `pageItems` : long - number of element on a single page
+* `pageItems` : long - number of elements on a single page
 * `page` : long - page number
 * anything else is considered a filter option
 
@@ -101,6 +101,28 @@ POST /api/color (Body: JSON)
 |    name    |     String     | color name                        |   red   |
 |     rgb    | Integer number | integer representation (rgb)      |    0    |
 
+
+#### predefined colors
+
+| Color name |    rgb(r, g, b)    |
+|:----------:|:------------------:|
+|    black   | rgb(0, 0, 0)       |
+|    gray    | rgb(128, 128, 128) |
+|     red    | rgb(255, 0, 0)     |
+|   golden   | rgb(255, 215, 0)   |
+|    blue    | rgb(0, 0, 255)     |
+|   silver   | rgb(192, 192, 192) |
+|    white   | rgb(255, 255, 255) |
+|    brown   | rgb(150, 75, 0)    |
+|   orange   | rgb(255, 165, 0)   |
+|    beige   | rgb(245, 245, 220) |
+|   yellow   | rgb(255, 255, 0)   |
+|    green   | rgb(0, 128, 0)     |
+| light blue | rgb(66, 170, 255)  |
+|   purple   | rgb(139, 0, 255)   |
+|    pink    | rgb(252, 15, 192)  |
+
+*color names should be lowercase*
 
 
 ### error handling
