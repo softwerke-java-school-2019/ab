@@ -15,7 +15,7 @@ import java.util.List;
 abstract class ModelController<T extends Model> {
     private static final String PAGE_ITEMS = "pageItems";
     private static final String PAGE = "page";
-    private static final String ORDER_TYPE = "orderType";
+    private static final String ORDER_TYPE = "orderBy";
 
     /**
      * Service providing underlying functionality

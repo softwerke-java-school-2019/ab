@@ -57,8 +57,7 @@ class DeviceQueryTest extends DataStorageGenericTest<Device> {
     @Test
     void byDateAndIdReversed() {
         sampleTest(request -> {
-            request.withOrderType("manufactureDate");
-            request.withOrderType("-id");
+            request.withOrderType("manufactureDate,-id");
         }, Comparator.comparing(Device::getManufactureDate), Comparator.comparing(Device::getId).reversed());
     }
 
@@ -119,6 +118,13 @@ class DeviceQueryTest extends DataStorageGenericTest<Device> {
         emptyTest(request -> {
             request.withFilterOptions("manufacturer", "HP1");
         });
+    }
+
+    @Test
+    void invalidOrderTypeComa() {
+        errorTest(request -> {
+            request.withOrderType("manufactureDate, ,-id");
+        }, "invalid order type: ' '");
     }
 
     @Test

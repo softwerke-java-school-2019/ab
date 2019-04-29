@@ -62,7 +62,7 @@ POST /api/<entity> (Body: JSON)
 * *api doesn't accept empty or null fields*
 
 ### GET /api/<entity> options
-* `orderType` : String - field to order by
+* `orderType` : String - fields to order by separated by coma, e.g. `manufactureDate,-id`
 * `pageItems` : long - number of elements on a single page
 * `page` : long - page number
 * anything else is considered a filter option

@@ -85,18 +85,21 @@ public abstract class SearchRequest<T extends Model> {
     /**
      * Attempts to set order type of query from string
      *
-     * @param orderType string representation of order type
+     * @param orderString string representation of order type
      * @throws MalformedSearchRequestException if arguments doesn't describe order type
      */
-    public void withOrderType(String orderType) throws MalformedSearchRequestException {
-        boolean reverse = StringUtils.startsWith(orderType, "-");
-        String actualOrderType = reverse ? StringUtils.substring(orderType, 1) : orderType;
-        SearchRequestUtils.assertBool(() -> getComparators().containsKey(actualOrderType), "invalid order type", actualOrderType);
-        Comparator<T> comparator = getComparators().get(actualOrderType);
-        if (reverse) {
-            comparator = comparator.reversed();
+    public void withOrderType(String orderString) throws MalformedSearchRequestException {
+        String[] orderTypes = StringUtils.split(orderString, ',');
+        for (String orderType : orderTypes) {
+            boolean reverse = StringUtils.startsWith(orderType, "-");
+            String actualOrderType = reverse ? StringUtils.substring(orderType, 1) : orderType;
+            SearchRequestUtils.assertBool(() -> getComparators().containsKey(actualOrderType), "invalid order type", actualOrderType);
+            Comparator<T> comparator = getComparators().get(actualOrderType);
+            if (reverse) {
+                comparator = comparator.reversed();
+            }
+            comparators.add(comparator);
         }
-        comparators.add(comparator);
     }
 
     /**
