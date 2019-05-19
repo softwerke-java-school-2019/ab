@@ -7,9 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.Objects;
 
+//TODO: 'fullName', 'birthDateLong' fields are still allowed in JSON serialization (possible bug in jackson???)
 
 public class Customer implements Model {
     public static final String DATE_FORMAT = "dd.MM.yyyy";
@@ -19,9 +21,11 @@ public class Customer implements Model {
     private static final String BIRTH_DATE_FIELD = "birthdate";
     private static final String MIDDLE_NAME_FIELD = "middleName";
 
-
-    @JsonProperty(ID_FIELD)
-    private long id;
+    @JsonProperty(BIRTH_DATE_FIELD)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
+    @NotNull(message = "birthDate is null")
+    @Past(message = "birthday in the future is not allowed")
+    private final LocalDate birthDate;
 
     @JsonProperty(FIRST_NAME_FIELD)
     @NotBlank(message = "firstName is empty or null")
@@ -34,11 +38,8 @@ public class Customer implements Model {
     @JsonProperty(LAST_NAME_FIELD)
     @NotBlank(message = "lastName is empty or null")
     private final String lastName;
-
-    @JsonProperty(BIRTH_DATE_FIELD)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
-    @NotNull(message = "birthDate is null")
-    private final LocalDate birthDate;
+    @JsonIgnore
+    private long id;
 
     @JsonIgnore
     private long birthDateLong;
@@ -57,11 +58,13 @@ public class Customer implements Model {
         this.birthDate = birthDate;
     }
 
+    @JsonProperty(ID_FIELD)
     public long getId() {
         return id;
     }
 
     @Override
+    @JsonIgnore
     public void setId(long id) {
         this.id = id;
     }
@@ -92,6 +95,7 @@ public class Customer implements Model {
         return birthDate;
     }
 
+    @JsonIgnore
     public long getBirthDateLong() {
         return birthDateLong;
     }

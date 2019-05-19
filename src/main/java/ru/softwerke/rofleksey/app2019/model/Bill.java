@@ -6,9 +6,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,21 +24,18 @@ public class Bill implements Model {
     private static final String PURCHASE_DATE_TIME_FIELD = "purchaseDateTime";
     private static final String TOTAL_PRICE_FIELD = "totalPrice";
 
-    @JsonProperty(ID_FIELD)
-    private long id = -1;
+    @JsonProperty(ITEMS_LIST_FIELD)
+    @Valid
+    @NotEmpty(message = "'items' field is empty or null")
+    private final List<@Valid @NotNull(message = "'items' array contains null object") BillItem> items;
 
     @JsonProperty(CUSTOMER_ID)
     private final long customerId;
-
-    @JsonProperty(ITEMS_LIST_FIELD)
-    @Valid
-    @NotNull(message = "'items' field is null")
-    private final List<@Valid @NotNull(message = "'items' array contains null object") BillItem> items;
-
-    @JsonProperty(PURCHASE_DATE_TIME_FIELD)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
+    @JsonIgnore
     @NotNull(message = "purchaseDateTime is null")
     private final LocalDateTime purchaseDateTime;
+    @JsonIgnore
+    private long id;
 
     @JsonIgnore
     private long dateLong;
@@ -49,20 +49,20 @@ public class Bill implements Model {
     @JsonCreator
     public Bill(
             @JsonProperty(value = CUSTOMER_ID, required = true) long customerId,
-            @JsonProperty(value = ITEMS_LIST_FIELD, required = true) List<BillItem> items,
-            @JsonProperty(value = PURCHASE_DATE_TIME_FIELD, required = true)
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT) LocalDateTime purchaseDateTime) {
+            @JsonProperty(value = ITEMS_LIST_FIELD, required = true) List<BillItem> items) {
         this.customerId = customerId;
-        this.items = items;
-        this.purchaseDateTime = purchaseDateTime;
+        this.items = items == null ? null : Collections.unmodifiableList(items);
+        this.purchaseDateTime = LocalDateTime.now(ZoneOffset.UTC);
     }
 
     @Override
+    @JsonProperty(ID_FIELD)
     public long getId() {
         return id;
     }
 
     @Override
+    @JsonIgnore
     public void setId(long id) {
         this.id = id;
     }
@@ -91,6 +91,8 @@ public class Bill implements Model {
         return items;
     }
 
+    @JsonProperty(PURCHASE_DATE_TIME_FIELD)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
     public LocalDateTime getPurchaseDateTime() {
         return purchaseDateTime;
     }

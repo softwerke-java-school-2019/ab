@@ -5,14 +5,20 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.apache.commons.lang3.StringUtils;
 import ru.softwerke.rofleksey.app2019.handlers.ColorDeserializer;
+import ru.softwerke.rofleksey.app2019.handlers.DeviceTypeDeserializer;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
+
+//TODO: 'dateLong', 'priceDouble' fields are still allowed in JSON serialization (possible bug in jackson???)
 
 public class Device implements Model {
     public static final String DATE_FORMAT = "dd.MM.yyyy";
@@ -25,9 +31,11 @@ public class Device implements Model {
     private static final String MANUFACTURER_FIELD = "manufacturer";
     private static final String MODEL_NAME_FIELD = "modelName";
 
-
-    @JsonProperty(ID_FIELD)
-    private long id;
+    @JsonProperty(MANUFACTURE_DATE_FIELD)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
+    @NotNull(message = "manufactureDate is null")
+    @PastOrPresent(message = "future manufacture date is not allowed")
+    private final LocalDate manufactureDate;
 
     @JsonProperty(DEVICE_TYPE_FIELD)
     @NotNull(message = "deviceType is null")
@@ -45,15 +53,12 @@ public class Device implements Model {
     @NotNull(message = "color is null")
     @Valid
     private Color color;
-
+    @JsonIgnore
+    private long id;
     @JsonProperty(PRICE_FIELD)
     @NotNull(message = "price is null")
+    @Positive(message = "price must be positive")
     private BigDecimal price;
-
-    @JsonProperty(MANUFACTURE_DATE_FIELD)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_FORMAT)
-    @NotNull(message = "manufactureDate is null")
-    private final LocalDate manufactureDate;
 
     @JsonIgnore
     private long dateLong;
@@ -64,7 +69,8 @@ public class Device implements Model {
     @JsonCreator
     public Device(
             @JsonProperty(value = PRICE_FIELD, required = true) BigDecimal price,
-            @JsonProperty(value = DEVICE_TYPE_FIELD, required = true) DeviceType type,
+            @JsonProperty(value = DEVICE_TYPE_FIELD, required = true)
+            @JsonDeserialize(using = DeviceTypeDeserializer.class) DeviceType type,
             @JsonProperty(value = MANUFACTURE_DATE_FIELD, required = true) LocalDate manufactureDate,
             @JsonProperty(value = COLOR_NAME_FIELD, required = true) @JsonDeserialize(using = ColorDeserializer.class) Color color,
             @JsonProperty(value = MANUFACTURER_FIELD, required = true) String manufacturer,
@@ -73,16 +79,18 @@ public class Device implements Model {
         this.type = type;
         this.manufactureDate = manufactureDate;
         this.color = color;
-        this.manufacturer = manufacturer;
-        this.modelName = modelName;
+        this.manufacturer = StringUtils.lowerCase(manufacturer);
+        this.modelName = StringUtils.lowerCase(modelName);
     }
 
     @Override
+    @JsonProperty(ID_FIELD)
     public long getId() {
         return id;
     }
 
     @Override
+    @JsonIgnore
     public void setId(long id) {
         this.id = id;
     }
@@ -106,8 +114,8 @@ public class Device implements Model {
         return color.getName();
     }
 
-    public DeviceType getType() {
-        return type;
+    public String getType() {
+        return type.getName();
     }
 
     @JsonProperty(COLOR_RGB_FIELD)

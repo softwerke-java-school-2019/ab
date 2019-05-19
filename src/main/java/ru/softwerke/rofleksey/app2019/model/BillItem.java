@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -17,10 +18,12 @@ public class BillItem {
     private final long deviceId;
 
     @JsonProperty(QUANTITY_FIELD)
+    @Positive(message = "quantity must be positive")
     private final int quantity;
 
     @JsonProperty(PRICE_FIELD)
     @NotNull
+    @Positive(message = "price must be positive")
     private final BigDecimal price;
 
     @JsonCreator

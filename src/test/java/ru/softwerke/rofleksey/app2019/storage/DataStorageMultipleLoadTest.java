@@ -23,14 +23,23 @@ class DataStorageMultipleLoadTest extends DataStorageGenericTest<Device> {
 
     @BeforeAll
     void init() {
-        storage.add(TestUtils.getRandomDevice(random));
+        try {
+            storage.addEntity(TestUtils.getRandomDevice(random));
+        } catch (StorageError storageError) {
+            storageError.printStackTrace();
+        }
     }
 
     @Test
     @RepeatedTest(value = REPEAT_COUNT, name = "byId {currentRepetition} / {totalRepetitions}")
     void byId() {
-        long id = addDevice().getId();
-        Device deviceById = storage.getById(id);
+        long id = 0;
+        try {
+            id = addDevice().getId();
+        } catch (StorageError storageError) {
+            fail("add device fail", storageError);
+        }
+        Device deviceById = storage.getEntityById(id);
         assertEquals(id, deviceById.getId(), "getById returned wrong device");
     }
 
@@ -38,11 +47,16 @@ class DataStorageMultipleLoadTest extends DataStorageGenericTest<Device> {
     @Test
     @RepeatedTest(value = REPEAT_COUNT, name = "search {currentRepetition} / {totalRepetitions}")
     void bySearch() {
-        Device addedDevice = addDevice();
+        Device addedDevice = null;
+        try {
+            addedDevice = addDevice();
+        } catch (StorageError storageError) {
+            fail("add device fail", storageError);
+        }
         SearchRequest<Device> request = new DeviceRequest();
         try {
             request.withFilterOptions("modelName", addedDevice.getModelName());
-            List<Device> result = storage.executeQuery(request.buildQuery());
+            List<Device> result = storage.search(request.buildQuery());
             assertFalse(result.isEmpty(), "search returned nothing");
             Device device = result.get(0);
             assertEquals(addedDevice.getId(), device.getId(), "search returned wrong device");
@@ -51,9 +65,9 @@ class DataStorageMultipleLoadTest extends DataStorageGenericTest<Device> {
         }
     }
 
-    private Device addDevice() {
+    private Device addDevice() throws StorageError {
         Device device = TestUtils.getRandomDevice(random);
-        storage.add(device);
+        storage.addEntity(device);
         return device;
     }
 }

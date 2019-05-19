@@ -3,9 +3,7 @@ package ru.softwerke.rofleksey.app2019.controller.rest;
 import ru.softwerke.rofleksey.app2019.filter.CustomerRequest;
 import ru.softwerke.rofleksey.app2019.filter.SearchRequest;
 import ru.softwerke.rofleksey.app2019.model.Customer;
-import ru.softwerke.rofleksey.app2019.service.DataService;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -15,16 +13,12 @@ import java.util.List;
 
 @Path("/customer")
 public class CustomerRestController extends ModelController<Customer> {
-    @Inject
-    public CustomerRestController(DataService<Customer> service) {
-        this.service = service;
-    }
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Customer createCustomer(@Valid Customer customer) {
-        return createEntity(customer);
+        addEntity(customer);
+        return customer;
     }
 
     @GET

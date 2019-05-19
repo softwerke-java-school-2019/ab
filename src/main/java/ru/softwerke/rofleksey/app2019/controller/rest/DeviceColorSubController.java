@@ -3,29 +3,25 @@ package ru.softwerke.rofleksey.app2019.controller.rest;
 import ru.softwerke.rofleksey.app2019.filter.ColorRequest;
 import ru.softwerke.rofleksey.app2019.filter.SearchRequest;
 import ru.softwerke.rofleksey.app2019.model.Color;
-import ru.softwerke.rofleksey.app2019.service.ColorService;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-@Path("/color")
-public class ColorController extends ModelController<Color> {
 
-    @Inject
-    public ColorController(ColorService service) {
-        this.service = service;
-    }
-
+public class DeviceColorSubController extends ModelController<Color> {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Color addColor(@Valid Color color) {
-        return createEntity(color);
+        addEntity(color);
+        return color;
     }
 
     @GET

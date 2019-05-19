@@ -1,11 +1,9 @@
 package ru.softwerke.rofleksey.app2019.filter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import ru.softwerke.rofleksey.app2019.model.Device;
-import ru.softwerke.rofleksey.app2019.model.DeviceType;
 import ru.softwerke.rofleksey.app2019.model.ModelUtils;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -25,10 +23,10 @@ public class DeviceRequest extends SearchRequest<Device> {
 
     private static final Map<String, FilterFactory<Device>> filterFactories;
     private static final Map<String, Comparator<Device>> comparators;
-    private static final ObjectMapper mapper = new ObjectMapper();
     private static final DateTimeFormatter format = DateTimeFormatter.ofPattern(Device.DATE_FORMAT);
 
     static {
+
         Map<String, FilterFactory<Device>> filterFactoriesTemp = new HashMap<>();
         Map<String, Comparator<Device>> comparatorTemp = new HashMap<>();
         SearchRequestUtils.addRange(filterFactoriesTemp, PRICE_CRITERIA, p -> {
@@ -41,16 +39,13 @@ public class DeviceRequest extends SearchRequest<Device> {
             return device -> Long.compare(device.getDateLong(), tmpLong);
         });
         filterFactoriesTemp.put(DEVICE_TYPE_CRITERIA, t -> {
-            DeviceType type = SearchRequestUtils.parseString(t, it -> {
-                try {
-                    return mapper.readValue("\"" + it + "\"", DeviceType.class);
-                } catch (IOException e) {
-                    throw new IllegalArgumentException();
-                }
-            });
+            String type = StringUtils.lowerCase(t);
             return device -> device.getType().equals(type);
         });
-        filterFactoriesTemp.put(COLOR_NAME_CRITERIA, name -> d -> d.getColorName().equals(name));
+        filterFactoriesTemp.put(COLOR_NAME_CRITERIA, name -> {
+            String colorName = StringUtils.lowerCase(name);
+            return d -> d.getColorName().equals(colorName);
+        });
         filterFactoriesTemp.put(COLOR_RGB_CRITERIA, color -> {
             int colorInt = SearchRequestUtils.parseString(color, Integer::valueOf);
             return device -> device.getColorRGB() == colorInt;

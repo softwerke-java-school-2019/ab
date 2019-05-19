@@ -16,6 +16,7 @@ public class TestUtils {
     private static final String CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static final String[] issers = new String[]{"Samsung", "Nokia", "Apple", "HP"};
     private static Supplier<Color[]> colors;
+    private static Supplier<DeviceType[]> deviceTypes;
 
     static {
         colors = new LazySupplier<Color[]>() {
@@ -25,6 +26,15 @@ public class TestUtils {
                         Color.fromRGB("red", 255, 0, 0),
                         Color.fromRGB("green", 0, 255, 0),
                         Color.fromRGB("blue", 0, 0, 255)
+                };
+            }
+        };
+        deviceTypes = new LazySupplier<DeviceType[]>() {
+            @Override
+            DeviceType[] init() {
+                return new DeviceType[]{
+                        new DeviceType("Laptop"), new DeviceType("Smart Watch"), new DeviceType("Smartphone"),
+                        new DeviceType("Tablet")
                 };
             }
         };
@@ -49,7 +59,7 @@ public class TestUtils {
 
     public static Device getRandomDevice(Random random) {
         BigDecimal price = BigDecimal.valueOf(random.nextInt(Integer.MAX_VALUE));
-        DeviceType type = oneOf(random, DeviceType.LAPTOP, DeviceType.SMART_WATCH, DeviceType.SMARTPHONE, DeviceType.TABLET);
+        DeviceType type = oneOf(random, deviceTypes.get());
         LocalDate date = Instant.ofEpochMilli(random.nextInt(Integer.MAX_VALUE)).atZone(ZoneId.systemDefault()).toLocalDate();
         Color color = oneOf(random, colors.get());
         String manufacturer = oneOf(random, issers);

@@ -11,7 +11,6 @@ import ru.softwerke.rofleksey.app2019.filter.DeviceRequest;
 import ru.softwerke.rofleksey.app2019.filter.MalformedSearchRequestException;
 import ru.softwerke.rofleksey.app2019.filter.SearchRequest;
 import ru.softwerke.rofleksey.app2019.model.Device;
-import ru.softwerke.rofleksey.app2019.model.DeviceType;
 import ru.softwerke.rofleksey.app2019.util.TestUtils;
 
 import java.math.BigDecimal;
@@ -32,11 +31,15 @@ class DeviceQueryTest extends DataStorageGenericTest<Device> {
 
     @BeforeAll
     void init() {
-        for (int i = 0; i < DATASET_SIZE; i++) {
-            Device device = TestUtils.getRandomDevice(random);
-            device.init();
-            storage.add(device);
-            testList.add(device);
+        try {
+            for (int i = 0; i < DATASET_SIZE; i++) {
+                Device device = TestUtils.getRandomDevice(random);
+                device.init();
+                storage.addEntity(device);
+                testList.add(device);
+            }
+        } catch (StorageError e) {
+            e.printStackTrace();
         }
     }
 
@@ -103,7 +106,7 @@ class DeviceQueryTest extends DataStorageGenericTest<Device> {
     void byType1() {
         sampleTest(request -> {
             request.withFilterOptions("deviceType", "Smartphone");
-        }, device -> device.getType() == DeviceType.SMARTPHONE);
+        }, device -> device.getType().equalsIgnoreCase("smartphone"));
     }
 
     @Test
@@ -190,7 +193,7 @@ class DeviceQueryTest extends DataStorageGenericTest<Device> {
             List<Device> requestResponse = executeRequest(optionsConsumer);
             assertTrue(requestResponse.isEmpty(), "response is not empty");
         } catch (MalformedSearchRequestException e) {
-            fail("malformered search request", e);
+            fail("malformed search request", e);
         }
     }
 
@@ -228,6 +231,6 @@ class DeviceQueryTest extends DataStorageGenericTest<Device> {
         SearchRequest<Device> request = new DeviceRequest();
         request.withPageItemsCount(DATASET_SIZE_STRING);
         optionsConsumer.accept(request);
-        return storage.executeQuery(request.buildQuery());
+        return storage.search(request.buildQuery());
     }
 }

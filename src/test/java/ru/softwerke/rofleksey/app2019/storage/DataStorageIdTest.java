@@ -7,7 +7,7 @@ import ru.softwerke.rofleksey.app2019.model.Device;
 import ru.softwerke.rofleksey.app2019.util.TestUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DataStorageIdTest extends DataStorageGenericTest<Device> {
@@ -20,8 +20,11 @@ class DataStorageIdTest extends DataStorageGenericTest<Device> {
     void add() {
         int curId = ++lastId;
         Device device = TestUtils.getRandomDevice(random);
-        Device addedDevice = storage.add(device);
-        assertNotNull(addedDevice, "returned device is null");
-        assertEquals(addedDevice.getId(), curId, "addedDevice id is invalid");
+        try {
+            storage.addEntity(device);
+        } catch (StorageError e) {
+            fail("storage error occured", e);
+        }
+        assertEquals(device.getId(), curId, "addedDevice id is invalid");
     }
 }

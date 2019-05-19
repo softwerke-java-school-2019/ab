@@ -3,10 +3,12 @@ package ru.softwerke.rofleksey.app2019.controller.rest;
 import org.apache.commons.lang3.StringUtils;
 import ru.softwerke.rofleksey.app2019.filter.MalformedSearchRequestException;
 import ru.softwerke.rofleksey.app2019.filter.SearchRequest;
-import ru.softwerke.rofleksey.app2019.handlers.JSONErrorMessage;
+import ru.softwerke.rofleksey.app2019.handlers.WebExceptionUtils;
 import ru.softwerke.rofleksey.app2019.model.Model;
-import ru.softwerke.rofleksey.app2019.service.DataService;
+import ru.softwerke.rofleksey.app2019.storage.Storage;
+import ru.softwerke.rofleksey.app2019.storage.StorageError;
 
+import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -20,7 +22,8 @@ abstract class ModelController<T extends Model> {
     /**
      * Service providing underlying functionality
      */
-    DataService<T> service;
+    @Inject
+    Storage<T> service;
 
     /**
      * Add entity to storage
@@ -29,10 +32,15 @@ abstract class ModelController<T extends Model> {
      * @return The same entity with id
      * @throws WebApplicationException if entity is null
      */
-    T createEntity(T entity) throws WebApplicationException {
+    void addEntity(T entity) throws WebApplicationException {
         QueryUtils.checkEmptyRequest(entity);
+        validate(entity);
         entity.init();
-        return service.addEntity(entity);
+        try {
+            service.addEntity(entity);
+        } catch (StorageError storageError) {
+            throw WebExceptionUtils.getWebException(Response.Status.BAD_REQUEST, "storage add error", storageError.getMessage());
+        }
     }
 
     /**
@@ -46,12 +54,8 @@ abstract class ModelController<T extends Model> {
         long id = QueryUtils.parseLongQueryParamMandatory(idParam, "id");
         T t = service.getEntityById(id);
         if (t == null) {
-            Response response = Response
-                    .status(Response.Status.NOT_FOUND)
-                    .entity(JSONErrorMessage.create("entity doesn't exist",
-                            String.format("%s with id %d doesn't exist", getEntityName(), id)))
-                    .build();
-            throw new WebApplicationException(response);
+            throw WebExceptionUtils.getWebException(Response.Status.NOT_FOUND, "entity doesn't exist",
+                    String.format("%s with id %d doesn't exist", getEntityName(), id));
         }
         return t;
     }
@@ -69,11 +73,8 @@ abstract class ModelController<T extends Model> {
             for (String key : clientParams.keySet()) {
                 String value = clientParams.getFirst(key);
                 if (StringUtils.isBlank(value)) {
-                    Response response = Response
-                            .status(Response.Status.BAD_REQUEST)
-                            .entity(JSONErrorMessage.create("empty field", String.format("field '%s' is empty", key)))
-                            .build();
-                    throw new WebApplicationException(response);
+                    throw WebExceptionUtils.getWebException(Response.Status.BAD_REQUEST, "empty field",
+                            String.format("field '%s' is empty", key));
                 }
                 switch (key) {
                     case PAGE_ITEMS: {
@@ -96,20 +97,16 @@ abstract class ModelController<T extends Model> {
             }
             List<T> list = service.search(request.buildQuery());
             if (list.isEmpty()) {
-                Response response = Response
-                        .status(Response.Status.NOT_FOUND)
-                        .entity(JSONErrorMessage.create("empty result", "result is empty"))
-                        .build();
-                throw new WebApplicationException(response);
+                throw WebExceptionUtils.getWebException(Response.Status.NOT_FOUND, "empty result", "result is empty");
             }
             return list;
         } catch (MalformedSearchRequestException e) {
-            Response response = Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(JSONErrorMessage.create("malformed request parameters", e.getMessage()))
-                    .build();
-            throw new WebApplicationException(response);
+            throw WebExceptionUtils.getWebException(Response.Status.BAD_REQUEST, "malformed request parameters", e.getMessage());
         }
+    }
+
+    void validate(T entity) throws WebApplicationException {
+
     }
 
     /**

@@ -1,17 +1,19 @@
 package ru.softwerke.rofleksey.app2019.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
-public class Color implements Model {
+public class Color implements NamedModel {
     private static final String ID_FIELD = "id";
     private static final String NAME_FIELD = "name";
     private static final String RGB_FIELD = "rgb";
 
-    @JsonProperty(ID_FIELD)
+    @JsonIgnore
     private long id;
 
     @JsonProperty(NAME_FIELD)
@@ -26,7 +28,7 @@ public class Color implements Model {
     public Color(
             @JsonProperty(value = NAME_FIELD, required = true) String name,
             @JsonProperty(value = RGB_FIELD, required = true) int rgb) {
-        this.name = name;
+        this.name = StringUtils.lowerCase(name);
         this.rgb = rgb;
     }
 
@@ -43,11 +45,13 @@ public class Color implements Model {
     }
 
     @Override
+    @JsonProperty(ID_FIELD)
     public long getId() {
         return id;
     }
 
     @Override
+    @JsonIgnore
     public void setId(long id) {
         this.id = id;
     }

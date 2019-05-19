@@ -17,7 +17,7 @@ public interface Storage<T extends Model> {
      * @param entity entity
      * @return entity with id
      */
-    T add(@NotNull T entity);
+    void addEntity(@NotNull T entity) throws StorageError;
 
     /**
      * Execute search query
@@ -25,7 +25,7 @@ public interface Storage<T extends Model> {
      * @param query query
      * @return list of entities fitting target request criteria
      */
-    List<T> executeQuery(SearchQuery<T> query);
+    List<T> search(SearchQuery<T> query);
 
     /**
      * Get entity by id
@@ -33,5 +33,24 @@ public interface Storage<T extends Model> {
      * @param id id
      * @return entity with target id or null if not found
      */
-    T getById(long id);
+    T getEntityById(long id);
+
+    /**
+     * Entity's class name
+     *
+     * @return name
+     */
+    default String entityTypeName() {
+        return "entity";
+    }
+
+    /**
+     * Checks whether entity with target id exists
+     *
+     * @param id id
+     * @return true if it exists, false otherwise
+     */
+    default boolean hasEntity(long id) {
+        return getEntityById(id) != null;
+    }
 }

@@ -1,7 +1,7 @@
 package ru.softwerke.rofleksey.app2019.controller.rest;
 
 import org.apache.commons.lang3.StringUtils;
-import ru.softwerke.rofleksey.app2019.handlers.JSONErrorMessage;
+import ru.softwerke.rofleksey.app2019.handlers.WebExceptionUtils;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -19,11 +19,7 @@ class QueryUtils {
      */
     static void checkEmptyRequest(Object o) throws WebApplicationException {
         if (o == null) {
-            Response response = Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(JSONErrorMessage.create("empty", "Request body is empty"))
-                    .build();
-            throw new WebApplicationException(response);
+            throw WebExceptionUtils.getWebException(Response.Status.BAD_REQUEST, "empty", "Request body is empty");
         }
     }
 
@@ -39,12 +35,8 @@ class QueryUtils {
 
     private static void checkMandatory(String param, String paramName, String customMessage) throws WebApplicationException {
         if (StringUtils.isBlank(param)) {
-            throw new WebApplicationException(
-                    Response.status(Response.Status.BAD_REQUEST)
-                            .entity(JSONErrorMessage.create("missing mandatory query parameter",
-                                    String.format(customMessage, paramName)))
-                            .build()
-            );
+            throw WebExceptionUtils.getWebException(Response.Status.BAD_REQUEST, "missing mandatory query parameter",
+                    String.format(customMessage, paramName));
         }
     }
 
@@ -59,12 +51,8 @@ class QueryUtils {
         try {
             number = Long.valueOf(param);
         } catch (NumberFormatException e) {
-            throw new WebApplicationException(
-                    Response.status(Response.Status.BAD_REQUEST)
-                            .entity(JSONErrorMessage.create("invalid query parameter format",
-                                    String.format("parameter '%s' is not a number", paramName)))
-                            .build()
-            );
+            throw WebExceptionUtils.getWebException(Response.Status.BAD_REQUEST, "invalid query parameter format",
+                    String.format("parameter '%s' is not a number", paramName));
         }
         return number;
     }

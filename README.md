@@ -62,13 +62,13 @@ POST /api/<entity> (Body: JSON)
 * *api doesn't accept empty or null fields*
 
 ### GET /api/<entity> options
-* `orderType` : String - fields to order by separated by coma, e.g. `manufactureDate,-id`
+* `orderBy` : String - fields to order by separated by coma, e.g. `manufactureDate,-id`
 * `pageItems` : long - number of elements on a single page
 * `page` : long - page number
 * anything else is considered a filter option
 
 * *some fields support range: `birthdate`, `price`, `manufactureDate`, `totalPrice`, `purchaseDateTime`, e.g. `priceFrom`, `priceTo` e.t.c.*
-* *`-` can be used before value of orderType to reverse the result, e.g. `orderType=-id`*
+* *`-` can be used before value of orderType to reverse the result, e.g. `orderBy=-id`*
 
 ### examples
 

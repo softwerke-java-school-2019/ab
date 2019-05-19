@@ -4,6 +4,7 @@ import ru.softwerke.rofleksey.app2019.model.Model;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -35,8 +36,9 @@ public class SearchQuery<T extends Model> {
         for (Predicate<T> predicate : filters) {
             stream = stream.filter(predicate);
         }
-        for (Comparator<T> comparator : comparators) {
-            stream = stream.sorted(comparator);
+        Optional<Comparator<T>> foldedComparatorHolder = comparators.stream().reduce(Comparator::thenComparing);
+        if (foldedComparatorHolder.isPresent()) {
+            stream = stream.sorted(foldedComparatorHolder.get());
         }
         return stream.skip((page - 1) * count).limit(count);
     }

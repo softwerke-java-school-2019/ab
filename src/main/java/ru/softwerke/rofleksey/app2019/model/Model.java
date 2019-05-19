@@ -16,7 +16,6 @@ public interface Model {
      */
     void setId(long id);
 
-
     /**
      * precalculates fields after object deserialization and validation
      */

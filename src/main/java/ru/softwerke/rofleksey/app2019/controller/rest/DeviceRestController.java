@@ -3,9 +3,7 @@ package ru.softwerke.rofleksey.app2019.controller.rest;
 import ru.softwerke.rofleksey.app2019.filter.DeviceRequest;
 import ru.softwerke.rofleksey.app2019.filter.SearchRequest;
 import ru.softwerke.rofleksey.app2019.model.Device;
-import ru.softwerke.rofleksey.app2019.service.DataService;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -15,16 +13,12 @@ import java.util.List;
 
 @Path("/device")
 public class DeviceRestController extends ModelController<Device> {
-    @Inject
-    public DeviceRestController(DataService<Device> service) {
-        this.service = service;
-    }
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Device createDevice(@Valid Device device) {
-        return createEntity(device);
+        addEntity(device);
+        return device;
     }
 
     @GET
@@ -48,5 +42,15 @@ public class DeviceRestController extends ModelController<Device> {
     @Override
     SearchRequest<Device> getEmptySearchRequest() {
         return new DeviceRequest();
+    }
+
+    @Path("/type")
+    public DeviceTypeSubController typeResource() {
+        return new DeviceTypeSubController();
+    }
+
+    @Path("/color")
+    public DeviceColorSubController colorResource() {
+        return new DeviceColorSubController();
     }
 }
