@@ -24,7 +24,7 @@ public class StringMapService<T extends NamedModel> extends StorageService<T> {
     @Override
     public void addEntity(T entity) throws StorageError {
         if (!allowOverwrite && nameMap.containsKey(entity.getName())) {
-            throw new StorageError(entityTypeName() + " with name " + entity.getName() + " already exists");
+            throw new StorageError(entityTypeName() + " with name '" + entity.getName() + "' already exists");
         }
         nameMap.put(entity.getName(), entity);
         super.addEntity(entity);

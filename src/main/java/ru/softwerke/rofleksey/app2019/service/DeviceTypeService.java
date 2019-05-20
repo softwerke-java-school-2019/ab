@@ -15,6 +15,6 @@ public class DeviceTypeService extends StringMapService<DeviceType> {
 
     @Override
     public String entityTypeName() {
-        return "device";
+        return "device type";
     }
 }

@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 @ApplicationPath("/")
 public class ShopApplication extends ResourceConfig {
     private static final Logger logger = LoggerFactory.getLogger(ShopApplication.class);
+
     public ShopApplication() {
         packages("ru.softwerke.rofleksey.app2019;com.fasterxml.jackson.jaxrs");
 
@@ -51,8 +52,10 @@ public class ShopApplication extends ResourceConfig {
                     }
                 }).to(new TypeLiteral<Storage<Bill>>() {
                 });
-                bind(colorService()).to(ColorService.class);
-                bind(deviceTypeService()).to(DeviceTypeService.class);
+                bind(colorService()).to(new TypeLiteral<Storage<Color>>() {
+                });
+                bind(deviceTypeService()).to(new TypeLiteral<Storage<DeviceType>>() {
+                });
             }
         });
         setProperties(new LinkedHashMap<String, Object>() {{
