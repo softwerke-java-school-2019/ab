@@ -29,7 +29,6 @@ abstract class ModelController<T extends Model> {
      * Add entity to storage
      *
      * @param entity Entity
-     * @return The same entity with id
      * @throws WebApplicationException if entity is null
      */
     void addEntity(T entity) throws WebApplicationException {

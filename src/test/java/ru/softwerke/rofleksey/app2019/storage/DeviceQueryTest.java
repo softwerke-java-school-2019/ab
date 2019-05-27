@@ -127,14 +127,7 @@ class DeviceQueryTest extends DataStorageGenericTest<Device> {
     void invalidOrderTypeComa() {
         errorTest(request -> {
             request.withOrderType("manufactureDate, ,-id");
-        }, "invalid order type: ' '");
-    }
-
-    @Test
-    void invalidType() {
-        errorTest(request -> {
-            request.withFilterOptions("deviceType", "eren");
-        }, "invalid enum type: 'eren'");
+        }, "invalid order type: ''");
     }
 
     @Test
@@ -217,8 +210,9 @@ class DeviceQueryTest extends DataStorageGenericTest<Device> {
             for (Predicate<Device> filter : filters) {
                 stream = stream.filter(filter);
             }
-            for (Comparator<Device> comparator : comparators) {
-                stream = stream.sorted(comparator);
+            Optional<Comparator<Device>> foldedComparatorHolder = comparators.stream().reduce(Comparator::thenComparing);
+            if (foldedComparatorHolder.isPresent()) {
+                stream = stream.sorted(foldedComparatorHolder.get());
             }
             List<Device> testResult = stream.collect(Collectors.toList());
             assertEquals(testResult, requestResponse, "lists are not equal");

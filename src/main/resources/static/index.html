@@ -5,29 +5,29 @@
     <link href="https://unpkg.com/spectre.css/dist/spectre.min.css" rel="stylesheet">
     <link href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css" rel="stylesheet">
     <link href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css" rel="stylesheet">
+    <link href="/styles.css" rel="stylesheet">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
-<ul class="nav">
-    <li class="nav-item active">
-        <a href="#">Index</a>
-    </li>
-    <li class="nav-item">
-        <a href="#">POST</a>
+<main class="panel">
+    <div class="panel-header">
+        <div class="panel-title">ShopApplication</div>
+    </div>
+    <div class="panel-body">
         <ul class="nav">
+            <li class="nav-item active">
+                <a href="#">Index</a>
+            </li>
             <li class="nav-item">
-                <a href="/post/device.html">device</a>
+                <a href="#">Device</a>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a href="/device/create.html">create</a>
+                    </li>
+                </ul>
             </li>
         </ul>
-    </li>
-    <li class="nav-item">
-        <a href="#">GET</a>
-        <ul class="nav">
-            <li class="nav-item">
-                <a href="#">device</a>
-            </li>
-        </ul>
-    </li>
-</ul>
+    </div>
+</main>
 </body>
 </html>
