@@ -50,8 +50,14 @@ public class DeviceRequest extends SearchRequest<Device> {
             int colorInt = SearchRequestUtils.parseString(color, Integer::valueOf);
             return device -> device.getColorRGB() == colorInt;
         });
-        filterFactoriesTemp.put(MANUFACTURER_CRITERIA, is -> d -> d.getManufacturer().equals(is));
-        filterFactoriesTemp.put(MODEL_NAME_CRITERIA, m -> d -> d.getModelName().equals(m));
+        filterFactoriesTemp.put(MANUFACTURER_CRITERIA, manufacturer -> {
+            String man = StringUtils.lowerCase(manufacturer);
+            return d -> d.getManufacturer().equals(man);
+        });
+        filterFactoriesTemp.put(MODEL_NAME_CRITERIA, model -> {
+            String m = StringUtils.lowerCase(model);
+            return d -> d.getModelName().equals(m);
+        });
         comparatorTemp.put(ID_CRITERIA, Comparator.comparing(Device::getId));
         comparatorTemp.put(PRICE_CRITERIA, Comparator.comparing(Device::getPrice));
         comparatorTemp.put(DEVICE_TYPE_CRITERIA, Comparator.comparing(Device::getType));
