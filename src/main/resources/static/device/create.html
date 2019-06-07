@@ -1,0 +1,64 @@
+<html lang="en">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <title>Create device</title>
+    <link href="https://unpkg.com/spectre.css/dist/spectre.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css" rel="stylesheet">
+    <link href="/styles.css" rel="stylesheet">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="create.js"></script>
+    <script src="/common.js"></script>
+</head>
+<body>
+<div class="modal" id="modal">
+    <a aria-label="Close" class="modal-overlay" href="#"></a>
+    <div class="modal-container">
+        <div class="modal-header">
+            <a aria-label="Close" class="btn btn-clear float-right" href="#" onclick="closeModal()"></a>
+            <div class="modal-title h5" id="modalTitle"><!-- title here --></div>
+        </div>
+        <div class="modal-body">
+            <div class="content" id="modalText">
+                <!-- response here -->
+            </div>
+        </div>
+    </div>
+</div>
+<main class="panel">
+    <div class="panel-header">
+        <div class="panel-title">Create device</div>
+    </div>
+    <div class="panel-body">
+        <div class="form-group">
+            <label class="form-label" for="manufacturer">Manufacturer</label>
+            <input class="form-input" id="manufacturer" placeholder="Xiomi" type="text" value="Xiomi">
+
+            <label class="form-label" for="modelName">Model Name</label>
+            <input class="form-input" id="modelName" placeholder="MEG7" type="text" value="MEG7">
+
+            <label class="form-label" for="deviceType">
+                Device Type
+                <span class="loading loadingInput" id="deviceTypeLoading"></span>
+            </label>
+            <select class="form-select" id="deviceType"></select>
+
+            <label class="form-label" for="manufactureDate">Manufacture Date</label>
+            <input class="form-input" id="manufactureDate" placeholder="29.04.2019" type="text" value="29.04.2019">
+
+            <label class="form-label" for="price">Price</label>
+            <input class="form-input" id="price" placeholder="12000" type="text" value="12000">
+
+            <label class="form-label" for="colorName">
+                Color
+                <span class="loading loadingInput" id="colorLoading"></span>
+            </label>
+            <select class="form-select" id="colorName"></select>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button class="btn btn-primary" id="submitButton" onclick="sendForm()">submit</button>
+    </div>
+</main>
+</body>
+</html>

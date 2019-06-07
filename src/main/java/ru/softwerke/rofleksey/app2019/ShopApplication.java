@@ -17,9 +17,12 @@ import java.util.LinkedHashMap;
 
 
 //TODO: remove 'message' fields?
-//TODO: frontend
+//TODO: frontend + byId?
 //TODO: russian names?
 //TODO: tweak api readme
+//TODO: substring search
+//TODO: init state -> file
+//TODO: swagger?? - javadoc
 
 @ApplicationPath("/")
 public class ShopApplication extends ResourceConfig {

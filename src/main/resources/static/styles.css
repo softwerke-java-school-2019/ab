@@ -1,0 +1,35 @@
+main {
+	width: 75vw;
+    margin: 0 auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.loadingInput {
+	margin-left: 10px;
+	vertical-align: middle;
+}
+
+.entityList {
+	display: flex;
+	flex-direction: column;
+}
+
+.itemHeader {
+	font-weight: bold;
+}
+
+.itemBody {
+	margin-left: 10px;
+}
+
+.leftColumn {
+	float: left;
+}
+
+.rightColumn {
+	float: right;
+	text-align: center;
+	font-weight: bold;
+}

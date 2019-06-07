@@ -1,0 +1,18 @@
+<div class="item">
+	<div class="leftColumn">
+		<div class="itemHeader">
+			{{deviceType}} <kbd>{{manufacturer}}</kbd> {{modelName}}
+		</div>
+		<div class="itemBody">
+			<div class="itemDescription">
+				{{manufactureDate}}, {{colorName}} <span style="color: {{colorRgb}};">■</span>
+			</div>
+			<div class="itemId">
+				id #{{id}}
+			</div>
+		</div>
+	</div>
+	<div class="rightColumn">
+		{{price}}$
+	</div>
+</div>
